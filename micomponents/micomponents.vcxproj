@@ -39,12 +39,14 @@
     <ClInclude Include="miButtonLamp.h" />
     <ClInclude Include="miLamp.h" />
     <ClInclude Include="miPlayWaveButtonLamp.h" />
+    <ClInclude Include="miVolume.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="miButton.cpp" />
     <ClCompile Include="miButtonLamp.cpp" />
     <ClCompile Include="miLamp.cpp" />
     <ClCompile Include="miPlayWaveButtonLamp.cpp" />
+    <ClCompile Include="miVolume.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6df31f9a-0500-4949-b59a-c71cf936a0a1}</ProjectGuid>
@@ -106,7 +108,7 @@
       <Command>cp $(RemoteDebuggerCommand) /usr/lib</Command>
     </RemotePostBuildEvent>
     <Link>
-      <LibraryDependencies>pthread;miutils;mimodules</LibraryDependencies>
+      <LibraryDependencies>pthread;miutils;mimodules;misound</LibraryDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
