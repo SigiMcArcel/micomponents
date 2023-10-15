@@ -6,7 +6,7 @@ INCLUDEDIR=/usr/include
 
 INCLUDES = -I. -I/.
 CXX_FLAGS = -fpic -Wall
-LD_FLAGS = -shared -lsndfile -lpthread -lasound
+LD_FLAGS = -shared -lpthread -lmiutils -lmimodules -lmisound
 
 SOURCES=miButton.cpp miButtonLamp.cpp miPlayWaveButtonLamp.cpp miVolume.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
