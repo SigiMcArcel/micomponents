@@ -1,4 +1,4 @@
-#include <mi/micomponents/miLamp.h>
+#include "miLamp.h"
 
 void micomponents::miLamp::eventOccured(void* sender, const std::string& name)
 {

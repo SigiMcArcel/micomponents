@@ -1,5 +1,5 @@
 #pragma once
-#include <mi/micomponents/miButtonLamp.h>
+#include "miButtonLamp.h"
 #include <mi/misound/Wave.h>
 
 namespace micomponents

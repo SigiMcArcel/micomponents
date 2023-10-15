@@ -1,4 +1,4 @@
-#include <mi/micomponents/miButtonLamp.h>
+#include "miButtonLamp.h"
 
 void micomponents::miButtonLamp::ButtonOn()
 {

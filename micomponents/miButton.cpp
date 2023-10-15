@@ -1,1 +1,1 @@
-#include <mi/micomponents/miButton.h>
+#include "miButton.h"

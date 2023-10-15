@@ -2,8 +2,8 @@
 #include <stdint.h>
 #include <string>
 #include <mi/miutils/Timer.h>
-#include <mi/micomponents/miLamp.h>
-#include <mi/micomponents/miButton.h>
+#include "miLamp.h"
+#include "miButton.h"
 #include <mi/mimodules/ModuleBase.h>
 
 namespace micomponents

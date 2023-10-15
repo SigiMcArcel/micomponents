@@ -1,4 +1,4 @@
-#include <mi/micomponents/miPlayWaveButtonLamp.h>
+#include "miPlayWaveButtonLamp.h"
 
 void micomponents::miPlayWaveButtonLamp::ButtonOn()
 {
