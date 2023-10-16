@@ -24,11 +24,11 @@ clean:
 
 install: $(LIBRARYOUT)
 	install -d $(DESTDIR)/${libdir}
-	install -D -m 0644 libmidriver.so $(DESTDIR)/${libdir}/$(LIBRARYOUT)
+	install -D -m 0644 $(LIBRARYOUT) $(DESTDIR)/${libdir}/$(LIBRARYOUT)
 	install -d $(DESTDIR)/${includedir}
 	install -d $(DESTDIR)/${includedir}/mi
 	install -d $(DESTDIR)/${includedir}/mi/micomponents
-	install -D -m 0644 miButton.h $(DESTDIR)/${includedir}/mi/midriver/miButton.h
-	install -D -m 0644 miButtonLamp.h $(DESTDIR)/${includedir}/mi/midriver/miButtonLamp.h
-	install -D -m 0644 miPlayWaveButtonLamp.h $(DESTDIR)/${includedir}/mi/midriver/miPlayWaveButtonLamp.h
-	install -D -m 0644 miVolume.h $(DESTDIR)/${includedir}/mi/midriver/miVolume.h
+	install -D -m 0644 miButton.h $(DESTDIR)/${includedir}/mi/micomponents/miButton.h
+	install -D -m 0644 miButtonLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miButtonLamp.h
+	install -D -m 0644 miPlayWaveButtonLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miPlayWaveButtonLamp.h
+	install -D -m 0644 miVolume.h $(DESTDIR)/${includedir}/mi/micomponents/miVolume.h
