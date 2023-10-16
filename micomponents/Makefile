@@ -3,7 +3,6 @@ prefix=/usr
 includedir=$(prefix)/include
 libdir=$(prefix)/lib
 
-
 INCLUDES = -I. -I/.
 CXX_FLAGS = -fpic -Wall
 LD_FLAGS = -shared -lpthread -lmiutils -lmimodules -lmisound
