@@ -1,8 +1,8 @@
-
-
 DESTDIR=
-LIBDIR=/usr/lib
-INCLUDEDIR=/usr/include
+prefix=/usr
+includedir=$(prefix)/include
+libdir=$(prefix)/lib
+
 
 INCLUDES = -I. -I/.
 CXX_FLAGS = -fpic -Wall
@@ -23,10 +23,12 @@ clean:
 	
 
 install: $(LIBRARYOUT)
-	mkdir -p $(DESTDIR)/$(LIBDIR)
-	mkdir -p $(DESTDIR)/$(INCLUDEDIR)
-	cp miButton.h $(DESTDIR)/$(INCLUDEDIR)
-	cp miButtonLamp.h $(DESTDIR)/$(INCLUDEDIR)
-	cp miPlayWaveButtonLamp.h $(DESTDIR)/$(INCLUDEDIR)
-	cp miVolume.h $(DESTDIR)/$(INCLUDEDIR)
-	cp $(LIBRARYOUT) $(DESTDIR)/$(LIBDIR)
+	install -d $(DESTDIR)/${libdir}
+	install -D -m 0644 libmidriver.so $(DESTDIR)/${libdir}/$(LIBRARYOUT)
+	install -d $(DESTDIR)/${includedir}
+	install -d $(DESTDIR)/${includedir}/mi
+	install -d $(DESTDIR)/${includedir}/mi/micomponents
+	install -D -m 0644 miButton.h $(DESTDIR)/${includedir}/mi/midriver/miButton.h
+	install -D -m 0644 miButtonLamp.h $(DESTDIR)/${includedir}/mi/midriver/miButtonLamp.h
+	install -D -m 0644 miPlayWaveButtonLamp.h $(DESTDIR)/${includedir}/mi/midriver/miPlayWaveButtonLamp.h
+	install -D -m 0644 miVolume.h $(DESTDIR)/${includedir}/mi/midriver/miVolume.h
