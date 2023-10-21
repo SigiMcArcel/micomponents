@@ -4,7 +4,7 @@ includedir=$(prefix)/include
 libdir=$(prefix)/lib
 
 INCLUDES = -I. -I/.
-CXX_FLAGS = -fpic -Wall
+CXX_FLAGS = -fpic -Wall -Wl,--no-undefined
 LD_FLAGS = -shared -lpthread -lmiutils -lmimodules -lmisound
 
 SOURCES=miLamp.cpp miButton.cpp miButtonLamp.cpp miPlayWaveButtonLamp.cpp miVolume.cpp
