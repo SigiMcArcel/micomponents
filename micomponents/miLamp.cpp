@@ -2,7 +2,7 @@
 
 void micomponents::miLamp::eventOccured(void* sender, const std::string& name)
 {
-	if (_Test)
+	if (_Override)
 	{
 		return;
 	}

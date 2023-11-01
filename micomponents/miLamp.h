@@ -23,7 +23,7 @@ namespace micomponents
 		bool _OutputState;
 		bool _LampState;
 		mimodule::ModuleChannel* _Channel;
-		bool _Test;
+		bool _Override;
 		std::string _Name;
 
 	public:
@@ -34,7 +34,7 @@ namespace micomponents
 			, _OutputState(false)
 			, _LampState(false)
 			, _Channel(channel)
-			, _Test(false)
+			, _Override(false)
 			, _Name(name)
 		{
 			if (_Type == LampType::Flash)
@@ -43,16 +43,18 @@ namespace micomponents
 			}
 		};
 
-		void Test(bool on)
+		void override(bool on)
 		{
-			_Test = on;
-			_Test >> _Channel->value();
+			_Override = on;
+			off();
 		}
 
 		void on()
 		{
-			if (_Test)
+			if (_Override)
 			{
+				bool state = true;
+				state >> _Channel->value();
 				return;
 			}
 			_LampState = true;
@@ -63,10 +65,13 @@ namespace micomponents
 		}
 		void off()
 		{
-			if (_Test)
+			if (_Override)
 			{
+				bool state = false;
+				state >> _Channel->value();
 				return;
 			}
+
 			_LampState = false;
 			if (_Type == LampType::Fix)
 			{

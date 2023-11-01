@@ -9,12 +9,14 @@ namespace micomponents
 	private:
 		misound::AlsaVolume _Volume;
 		mimodule::ModuleChannel* _Channel;
+		double _MaxVolume;
 		
 
 	public:
-		miVolume(mimodule::ModuleChannel* channel)
-			: _Volume(100)
-			,_Channel(channel)
+		miVolume(mimodule::ModuleChannel* channel, int intervall, double maxVolume)
+			: _Volume(intervall)
+			, _Channel(channel)
+			, _MaxVolume(maxVolume)
 		{
 			if (_Channel != nullptr)
 			{

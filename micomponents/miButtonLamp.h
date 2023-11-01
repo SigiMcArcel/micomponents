@@ -16,6 +16,7 @@ namespace micomponents
 		miLamp _Lamp;
 		miButtonEventInterface* _ButtonEvent;
 		std::string _Name;
+		bool _LockButton;
 
 	public:
 		miButtonLamp(
@@ -35,6 +36,20 @@ namespace micomponents
 			
 		};
 
+		virtual void Lock(bool lock)
+		{
+			_LockButton = lock;
+		}
+
+		void LampOn()
+		{
+			_Lamp.on();
+		}
+
+		void LampOff()
+		{
+			_Lamp.on();
+		}
 
 
 		// Geerbt über miButtonEventInterface

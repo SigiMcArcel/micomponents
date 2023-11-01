@@ -34,6 +34,12 @@ namespace micomponents
 
 		};
 
+		void Lock(bool lock) override
+		{
+			miButtonLamp::Lock(lock);
+			_Wave.stop();
+		}
+
 		virtual void ButtonOn() override;
 		virtual void ButtonOff() override;
 

@@ -2,6 +2,10 @@
 
 void micomponents::miButtonLamp::ButtonOn()
 {
+	if (_LockButton)
+	{
+		return;
+	}
 	_Lamp.on();
 	if (_ButtonEvent)
 	{
@@ -11,6 +15,10 @@ void micomponents::miButtonLamp::ButtonOn()
 
 void micomponents::miButtonLamp::ButtonOff()
 {
+	if (_LockButton)
+	{
+		return;
+	}
 	_Lamp.off();
 	if (_ButtonEvent)
 	{
