@@ -1,4 +1,4 @@
-#include <mi/micomponents/miVolume.h>
+#include "miVolume.h"
 
 void micomponents::miVolume::ValueChanged(mimodule::ModuleValue& value, const std::string& id)
 {
