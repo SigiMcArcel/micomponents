@@ -37,6 +37,8 @@
   <ItemGroup>
     <ClInclude Include="miButton.h" />
     <ClInclude Include="miButtonLamp.h" />
+    <ClInclude Include="mibuttonLampMananger.h" />
+    <ClInclude Include="miComponentInterface.h" />
     <ClInclude Include="miLamp.h" />
     <ClInclude Include="miPlayWaveButtonLamp.h" />
     <ClInclude Include="miVolume.h" />
@@ -44,6 +46,8 @@
   <ItemGroup>
     <ClCompile Include="miButton.cpp" />
     <ClCompile Include="miButtonLamp.cpp" />
+    <ClCompile Include="mibuttonLampMananger.cpp" />
+    <ClCompile Include="miComponentInterface.cpp" />
     <ClCompile Include="miLamp.cpp" />
     <ClCompile Include="miPlayWaveButtonLamp.cpp" />
     <ClCompile Include="miVolume.cpp" />

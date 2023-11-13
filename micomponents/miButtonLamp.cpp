@@ -1,27 +1,62 @@
 #include "miButtonLamp.h"
 
-void micomponents::miButtonLamp::ButtonOn()
+void micomponents::miButtonLamp::LampHandler()
 {
-	if (_LockButton)
+}
+
+void micomponents::miButtonLamp::ButtonDown(const std::string& name)
+{
+	if (_Behaviour == ButtonType::Switch)
 	{
-		return;
-	}
-	_Lamp.on();
-	if (_ButtonEvent)
-	{
-		_ButtonEvent->ButtonOn();
+		_Lamp.on();
+		if (_ButtonEvent)
+		{
+			_ButtonEvent->ButtonDown(_Name);
+		}
 	}
 }
 
-void micomponents::miButtonLamp::ButtonOff()
+void micomponents::miButtonLamp::ButtonUp(const std::string& name)
 {
-	if (_LockButton)
+	if (_Behaviour == ButtonType::Switch)
 	{
-		return;
-	}
-	_Lamp.off();
-	if (_ButtonEvent)
-	{
-		_ButtonEvent->ButtonOff();
+		_Lamp.off();
+		if (_ButtonEvent)
+		{
+			_ButtonEvent->ButtonUp(_Name);
+		}
 	}
 }
+
+void micomponents::miButtonLamp::ButtonClick(const std::string& name)
+{
+	;
+}
+void micomponents::miButtonLamp::ButtonToggle(bool state, const std::string& name)
+{
+	if (_Behaviour == ButtonType::PushButtonToggle)
+	{
+		if (state)
+		{
+			_Lamp.on();
+		}
+		else
+		{
+			_Lamp.off();
+		}
+
+		if (_ButtonEvent)
+		{
+			_ButtonEvent->ButtonToggle(state,_Name);
+		}
+	}
+}
+
+void micomponents::miButtonLamp::lampControl(bool on)
+{
+	_Lamp.lampControl(on);
+}
+
+
+
+

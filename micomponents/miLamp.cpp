@@ -2,28 +2,40 @@
 
 void micomponents::miLamp::eventOccured(void* sender, const std::string& name)
 {
-	if (_Override)
-	{
-		return;
-	}
+	
 	if ("FlashTimer" == name)
 	{
-		if (_LampState)
+		if(_Type == LampType::Flash)
 		{
-			if (_OutputState)
+			if (_LampState)
 			{
-				_OutputState = false;
+				if ((_TimerIntervalCounter / 10) > _FlashTime)
+				{
+					if (_Toggle)
+					{
+						_Toggle = false;
+					}
+					else
+					{
+						_Toggle = true;
+					}
+					_OutputState = _Toggle;
+				}
 			}
 			else
 			{
-				_OutputState = true;
+				_OutputState = false;
+				_Toggle = false;
 			}
 		}
-		else
+		else if (_Type == LampType::Fix)
 		{
-			_OutputState = false;
+			_OutputState = _LampState;
 		}
-
+		if (_LampControl)
+		{
+			_OutputState = true;
+		}
+		_OutputState >> _Channel->value();
 	}
-	_OutputState >> _Channel->value();
 }

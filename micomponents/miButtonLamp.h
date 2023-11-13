@@ -4,19 +4,29 @@
 #include <mi/miutils/Timer.h>
 #include "miLamp.h"
 #include "miButton.h"
+#include "miComponentInterface.h"
 #include <mi/mimodules/ModuleBase.h>
 
 namespace micomponents
 {
-	class miButtonLamp : public miButton, public micomponents::miButtonEventInterface
+	enum class ButtonType
 	{
-		
+		PushButtonToggle, //click on, click off
+		Switch,//button hold -> lamp on, button released lamp off
+	};
 
+	class miButtonLamp : public miButtonEventInterface, public miLampInterface
+	{
 	protected:
+		miButton _Button;
 		miLamp _Lamp;
 		miButtonEventInterface* _ButtonEvent;
 		std::string _Name;
 		bool _LockButton;
+		ButtonType _Behaviour;
+		bool _EmergencyStop;
+
+		void LampHandler();
 
 	public:
 		miButtonLamp(
@@ -28,18 +38,15 @@ namespace micomponents
 			const std::string& name, 
 			ButtonType buttonType,
 			bool inverse = false)
-			:miButton(inputChannel, this, inverse,name + "_Button",buttonType)
+			: _Button(inputChannel, this, inverse,name + "_Button")
 			, _Lamp(lampType, flashTime, outputChannel, name + "_Lamp")
 			, _ButtonEvent(buttonEvent)
 			, _Name(name)
+			, _Behaviour(buttonType)
+			, _EmergencyStop(false)
 		{
 			
 		};
-
-		virtual void Lock(bool lock)
-		{
-			_LockButton = lock;
-		}
 
 		void LampOn()
 		{
@@ -50,14 +57,26 @@ namespace micomponents
 		{
 			_Lamp.on();
 		}
-
-
 		// Geerbt über miButtonEventInterface
+		virtual void ButtonDown(const std::string& name) override;
+		virtual void ButtonUp(const std::string& name) override;
+		virtual void ButtonClick(const std::string& name) override;
+		virtual void ButtonToggle(bool state, const std::string& name) override;
 
-		virtual void ButtonOn() override;
-
-		virtual void ButtonOff() override;
-
+		// Geerbt über miLampControlInterface
+		virtual void lampControl(bool on);
+		virtual void lampOn() override
+		{
+			_Lamp.on();
+		}
+		virtual void lampOff()  override
+		{
+			_Lamp.off();
+		}
+		virtual const std::string name() override
+		{
+			return _Name;
+		}
 	};
 }
 

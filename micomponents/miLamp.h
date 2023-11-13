@@ -3,6 +3,7 @@
 #include <string>
 #include <mi/miutils/Timer.h>
 #include <mi/mimodules/ModuleChannel.h>
+#include "miComponentInterface.h"
 
 namespace micomponents
 {
@@ -12,72 +13,72 @@ namespace micomponents
 		Fix
 	};
 
-	class miLamp : public miutils::EventListener
+	class miLamp : public miutils::EventListener,public miLampInterface
 	{
-		
-
 	private:
+
+		const int32_t _TimerInterval = 10;
 		LampType _Type;
 		int32_t _FlashTime;
+		int32_t _TimerIntervalCounter;
 		miutils::Timer _FlashTimer;
 		bool _OutputState;
 		bool _LampState;
 		mimodule::ModuleChannel* _Channel;
-		bool _Override;
+		bool _LampControl;
+		bool _Toggle;
 		std::string _Name;
 
 	public:
-		miLamp(LampType lampType, int32_t flashTime, mimodule::ModuleChannel* channel,const std::string& name)
+		miLamp(LampType lampType, int32_t flashTime, mimodule::ModuleChannel* channel, const std::string& name)
 			:_Type(lampType)
 			, _FlashTime(flashTime)
 			, _FlashTimer("FlashTimer", this)
 			, _OutputState(false)
 			, _LampState(false)
 			, _Channel(channel)
-			, _Override(false)
+			, _LampControl(false)
+			, _Toggle(false)
 			, _Name(name)
 		{
-			if (_Type == LampType::Flash)
-			{
-				_FlashTimer.Start(_FlashTime, nullptr, 10, miutils::Schedulers::Other);
-			}
+			_FlashTimer.Start(_TimerInterval, nullptr, 10, miutils::Schedulers::Other);
 		};
 
-		void override(bool on)
+		~miLamp()
 		{
-			_Override = on;
+			_FlashTimer.Stop();
+		}
+
+		virtual void lampControl(bool on)
+		{
+			_LampControl = on;
+		}
+
+		
+		virtual void lampOn()
+		{
+			on();
+		}
+		virtual void lampOff()
+		{
 			off();
+		}
+		virtual const std::string name()
+		{
+			return _Name;
 		}
 
 		void on()
-		{
-			if (_Override)
-			{
-				bool state = true;
-				state >> _Channel->value();
-				return;
-			}
+		{	
 			_LampState = true;
-			if (_Type == LampType::Fix)
-			{
-				_LampState >> _Channel->value();
-			}
 		}
+
 		void off()
 		{
-			if (_Override)
-			{
-				bool state = false;
-				state >> _Channel->value();
-				return;
-			}
-
 			_LampState = false;
-			if (_Type == LampType::Fix)
-			{
-				_LampState >> _Channel->value();
-			}
 		}
+
+		
 
 
 		// Geerbt über EventListener

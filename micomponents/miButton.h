@@ -4,103 +4,127 @@
 #include <mi/mimodules/ModuleChannel.h>
 namespace micomponents
 {
-    enum class ButtonType
-    {
-        PushButton,
-        PushButtonToggle,
-        Switch,
-    };
-
     class miButtonEventInterface
     {
     public:
-        virtual void ButtonOn() = 0;
-        virtual void ButtonOff() = 0;
+        virtual void ButtonDown(const std::string& name) = 0;
+        virtual void ButtonUp(const std::string& name) = 0;
+        virtual void ButtonClick(const std::string& name) = 0;
+        virtual void ButtonToggle(bool state, const std::string& name) = 0;
     };
 
 	class miButton :public mimodule::ModuleValueChangedEvent
 	{
-        
-
         enum class ButtonState
         {
             On,
             Off
         };
-    private:
+    protected:
         bool _LastState;
         mimodule::ModuleChannel* _Channel;
         miButtonEventInterface* _ButtonEvent;
         bool _Inverse;
         std::string _Name;
-        ButtonType _ButtonType;
         bool _Toggle;
-
-
-        void handleButton(bool val)
+        bool _ButtonState;
+        bool _ButtonStateLast;
+       
+        void handleButton()
         {
-
-            switch (_ButtonType)
+            if (!_ButtonState && _ButtonStateLast)
             {
-                case ButtonType::PushButton:
-                case ButtonType::Switch:
-                {
-                    if (!val)
-                    {
-                        _ButtonEvent->ButtonOff();
-                    }
-                    else
-                    {
-                        _ButtonEvent->ButtonOn();
-                    }
-                    break;
-                }
-                case ButtonType::PushButtonToggle:
-                {
-                    if (val && !_Toggle)
-                    {
-                        _Toggle = true;
-                        _ButtonEvent->ButtonOn();
+                _ButtonEvent->ButtonClick(_Name);
+            }
 
-                    }
-                    if (val && _Toggle)
-                    {
-                        _Toggle = false;
-                        _ButtonEvent->ButtonOff();
-                    }
-                    break;
-                }
+            if (_ButtonState)
+            {
+                _ButtonEvent->ButtonDown(_Name);
+            }
+            else
+            {
+                _ButtonEvent->ButtonUp(_Name);
+            }
+
+            if (_ButtonEvent && !_Toggle)
+            {
+                _Toggle = true;
+                _ButtonEvent->ButtonToggle(_Toggle, _Name);
 
             }
+            if (_ButtonEvent && _Toggle)
+            {
+                _Toggle = false;
+                _ButtonEvent->ButtonToggle(_Toggle,_Name);
+            }
+
+
+            //switch (_ButtonType)
+            //{
+            //    case ButtonType::PushButton:
+            //    case ButtonType::Switch:
+            //    {
+            //        if (!val)
+            //        {
+            //            _ButtonEvent->ButtonOff();
+            //        }
+            //        else
+            //        {
+            //            _ButtonEvent->ButtonOn();
+            //        }
+            //        break;
+            //    }
+            //    case ButtonType::PushButtonToggle:
+            //    {
+            //        if (val && !_Toggle)
+            //        {
+            //            _Toggle = true;
+            //            _ButtonEvent->ButtonOn();
+
+            //        }
+            //        if (val && _Toggle)
+            //        {
+            //            _Toggle = false;
+            //            _ButtonEvent->ButtonOff();
+            //        }
+            //        break;
+            //    }
+
+            //}
         }
 
     public:
-        miButton(mimodule::ModuleChannel* channel, miButtonEventInterface* buttonEvent, bool inverse, const std::string& name,ButtonType type)
+        miButton(mimodule::ModuleChannel* channel, miButtonEventInterface* buttonEvent, bool inverse, const std::string& name)
             :_LastState(false)
             , _Channel(channel)
             , _ButtonEvent(buttonEvent)
-            ,_Inverse(inverse)
+            , _Inverse(inverse)
             , _Name(name)
-            , _ButtonType(type)
             , _Toggle(false)
+            , _ButtonState(false)
         {
             if (_Channel != nullptr)
             {
                 _Channel->registerChannelEvent(this);
             }
         }
+
+
+        bool getState() const
+        {
+            return _ButtonState;
+        }
         // Geerbt über ModuleValueChangedEvent
         virtual void ValueChanged(mimodule::ModuleValue& value, const std::string& id) override
         {
-            bool val = false;
-            val << value;
+            _ButtonState << value;
             if (_Inverse)
             {
-                val = !val;
+                _ButtonState = !_ButtonState;
             }
             if (_ButtonEvent != nullptr)
             {
-                handleButton(val);
+                handleButton();
             }
            
         }

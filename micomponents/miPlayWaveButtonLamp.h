@@ -1,13 +1,17 @@
 #pragma once
 #include "miButtonLamp.h"
 #include <mi/misound/Wave.h>
+#include <mi/miutils/Timer.h>
 
 namespace micomponents
 {
-	class miPlayWaveButtonLamp : public micomponents::miButtonLamp 
+	class miPlayWaveButtonLamp : public micomponents::miButtonLamp, public miutils::EventListener, public miEmergenceStopInterface
 	{
 	private:
 		misound::Wave _Wave;
+		miutils::Timer _MonitoringTimer;
+		bool _IsPlaying;
+		
 	public:
 		miPlayWaveButtonLamp(
 			LampType lampType,
@@ -30,20 +34,26 @@ namespace micomponents
 				buttonType,
 				false)
 			, _Wave(wavePath + std::string("/") + name + std::string(".wav"), name, waveloop)
+			, _MonitoringTimer("Monitring",this )
+			, _IsPlaying(false)
 		{
-
+			_MonitoringTimer.Start(20);
 		};
 
-		void Lock(bool lock) override
+		~miPlayWaveButtonLamp()
 		{
-			miButtonLamp::Lock(lock);
-			_Wave.stop();
-		}
-
-		virtual void ButtonOn() override;
-		virtual void ButtonOff() override;
-
+			_MonitoringTimer.Stop();
+		};
 		
+
+		void ButtonDown(const std::string& name) override;
+		void ButtonUp(const std::string& name) override;
+		void ButtonToggle(bool state, const std::string& name) override;
+	
+		// Geerbt über miEmergenceStopInterface
+		virtual void emergencyStop(bool on) override;
+		void eventOccured(void* sender, const std::string& name) override;
+
 	};
 
 }
