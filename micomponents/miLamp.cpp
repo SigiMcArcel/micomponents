@@ -9,33 +9,33 @@ void micomponents::miLamp::eventOccured(void* sender, const std::string& name)
 		{
 			if (_LampState)
 			{
-				if ((_TimerIntervalCounter / 10) > _FlashTime)
+				if (_Toggle)
 				{
-					if (_Toggle)
-					{
-						_Toggle = false;
-					}
-					else
-					{
-						_Toggle = true;
-					}
-					_OutputState = _Toggle;
+					_Toggle = false;
 				}
+				else
+				{
+					_Toggle = true;
+				}
+				_OutputState = _Toggle;
 			}
 			else
 			{
 				_OutputState = false;
 				_Toggle = false;
+				_TimerIntervalCounter = 0;
 			}
+			if (_LampControl)
+			{
+				_OutputState = true;
+			}
+			if (_Channel == nullptr)
+			{
+				printf("miLamp invalid channel\n");
+			}
+			_OutputState >> _Channel->value();	
 		}
-		else if (_Type == LampType::Fix)
-		{
-			_OutputState = _LampState;
-		}
-		if (_LampControl)
-		{
-			_OutputState = true;
-		}
-		_OutputState >> _Channel->value();
+		
+		
 	}
 }

@@ -41,7 +41,7 @@ namespace micomponents
 			, _Toggle(false)
 			, _Name(name)
 		{
-			_FlashTimer.Start(_TimerInterval, nullptr, 10, miutils::Schedulers::Other);
+			_FlashTimer.Start(_FlashTime, nullptr, 10, miutils::Schedulers::Other);
 		};
 
 		~miLamp()
@@ -71,11 +71,37 @@ namespace micomponents
 		void on()
 		{	
 			_LampState = true;
+			if (_Type == LampType::Fix)
+			{
+				_OutputState = _LampState;
+				if (_LampControl)
+				{
+					_OutputState = true;
+				}
+				if (_Channel == nullptr)
+				{
+					printf("miLamp invalid channel\n");
+				}
+				_OutputState >> _Channel->value();
+			}
 		}
 
 		void off()
 		{
 			_LampState = false;
+			if (_Type == LampType::Fix)
+			{
+				_OutputState = _LampState;
+				if (_LampControl)
+				{
+					_OutputState = true;
+				}
+				if (_Channel == nullptr)
+				{
+					printf("miLamp invalid channel\n");
+				}
+				_OutputState >> _Channel->value();
+			}
 		}
 
 		

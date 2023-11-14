@@ -2,11 +2,18 @@
 
 void micomponents::miPlayWaveButtonLamp::ButtonDown(const std::string& name)
 {
+	_Wave.play();
 	miButtonLamp::ButtonDown(name);
-	if (_Behaviour == ButtonType::Switch)
+	
+	/*if (_Behaviour == ButtonType::Switch)
 	{
 		_Wave.play();
 	}
+	else  if (_Behaviour == ButtonType::PushButtonToggle)
+	{
+			_Wave.play();
+			_Lamp.lampOn();
+	}*/
 }
 
 void micomponents::miPlayWaveButtonLamp::ButtonUp(const std::string& name)
@@ -20,11 +27,9 @@ void micomponents::miPlayWaveButtonLamp::ButtonUp(const std::string& name)
 
 void micomponents::miPlayWaveButtonLamp::ButtonToggle(bool state, const std::string& name)
 {
-	miButtonLamp::ButtonToggle(state,_Name);
-	if (_Behaviour == ButtonType::PushButtonToggle)
-	{
-		_Wave.stop();
-	}
+	//miButtonLamp::ButtonToggle(state,_Name);
+	
+	
 }
 
 void micomponents::miPlayWaveButtonLamp::emergencyStop(bool on)
@@ -33,6 +38,7 @@ void micomponents::miPlayWaveButtonLamp::emergencyStop(bool on)
 	if (_EmergencyStop)
 	{
 		_Lamp.off();
+		_Wave.stop();
 	}
 	else
 	{
@@ -56,14 +62,17 @@ void micomponents::miPlayWaveButtonLamp::emergencyStop(bool on)
 // Geerbt über EventListener
 void micomponents::miPlayWaveButtonLamp::eventOccured(void* sender, const std::string& name)
 {
-	if (_IsPlaying && !_Wave.isPlaying())
+	if (_Behaviour == ButtonType::PushButtonToggle)
 	{
-		_Lamp.off();
-		_IsPlaying = false;
-		return;
-	}
-	if (!_IsPlaying && _Wave.isPlaying())
-	{
-		_IsPlaying = true;
+		if (_IsPlaying && !_Wave.isPlaying())
+		{
+			_Lamp.off();
+			_IsPlaying = false;
+			return;
+		}
+		if (!_IsPlaying && _Wave.isPlaying())
+		{
+			_IsPlaying = true;
+		}
 	}
 }

@@ -48,15 +48,6 @@ namespace micomponents
 			
 		};
 
-		void LampOn()
-		{
-			_Lamp.on();
-		}
-
-		void LampOff()
-		{
-			_Lamp.on();
-		}
 		// Geerbt über miButtonEventInterface
 		virtual void ButtonDown(const std::string& name) override;
 		virtual void ButtonUp(const std::string& name) override;

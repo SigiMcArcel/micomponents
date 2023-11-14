@@ -36,6 +36,7 @@ namespace micomponents
             {
                 _ButtonEvent->ButtonClick(_Name);
             }
+            _ButtonStateLast = _ButtonState;
 
             if (_ButtonState)
             {
@@ -46,13 +47,12 @@ namespace micomponents
                 _ButtonEvent->ButtonUp(_Name);
             }
 
-            if (_ButtonEvent && !_Toggle)
+            if (_ButtonState && !_Toggle)
             {
                 _Toggle = true;
                 _ButtonEvent->ButtonToggle(_Toggle, _Name);
 
-            }
-            if (_ButtonEvent && _Toggle)
+            }else if (_ButtonState && _Toggle)
             {
                 _Toggle = false;
                 _ButtonEvent->ButtonToggle(_Toggle,_Name);
@@ -106,6 +106,10 @@ namespace micomponents
             if (_Channel != nullptr)
             {
                 _Channel->registerChannelEvent(this);
+            }
+            else
+            {
+                printf("miButton invalid channel\n");
             }
         }
 
