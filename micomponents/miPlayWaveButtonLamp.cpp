@@ -37,6 +37,7 @@ void micomponents::miPlayWaveButtonLamp::emergencyStop(bool on)
 	_EmergencyStop = on;
 	if (_EmergencyStop)
 	{
+		printf("emergencyStop %s\n", _Name.c_str());
 		_Lamp.off();
 		_Wave.stop();
 	}

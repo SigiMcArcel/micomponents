@@ -23,6 +23,7 @@ namespace micomponents
 		int32_t _TimerIntervalCounter;
 		miutils::Timer _FlashTimer;
 		bool _OutputState;
+		bool _OutputStateLast;
 		bool _LampState;
 		mimodule::ModuleChannel* _Channel;
 		bool _LampControl;
@@ -35,6 +36,7 @@ namespace micomponents
 			, _FlashTime(flashTime)
 			, _FlashTimer("FlashTimer", this)
 			, _OutputState(false)
+			, _OutputStateLast(false)
 			, _LampState(false)
 			, _Channel(channel)
 			, _LampControl(false)
@@ -49,9 +51,19 @@ namespace micomponents
 			_FlashTimer.Stop();
 		}
 
-		virtual void lampControl(bool on)
+		virtual void lampControl(bool state)
 		{
-			_LampControl = on;
+			_LampControl = state;
+			
+			if (_LampControl)
+			{
+				_OutputState = _LampControl;
+			}
+			else
+			{
+				_OutputState = _LampState;
+			}
+			_OutputState >> _Channel->value();
 		}
 
 		
@@ -83,6 +95,7 @@ namespace micomponents
 					printf("miLamp invalid channel\n");
 				}
 				_OutputState >> _Channel->value();
+				
 			}
 		}
 
