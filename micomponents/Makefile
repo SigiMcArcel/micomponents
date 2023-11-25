@@ -7,7 +7,7 @@ INCLUDES = -I. -I/.
 CXX_FLAGS = -fpic -Wall -Wl,--no-undefined
 LD_FLAGS = -shared -lpthread -lmiutils -lmimodules -lmisound
 
-SOURCES=miLamp.cpp miButton.cpp miButtonLamp.cpp miPlayWaveButtonLamp.cpp miVolume.cpp
+SOURCES=miLamp.cpp miButton.cpp miButtonLamp.cpp miPlayWaveButtonLamp.cpp miVolume.cpp mibuttonLampManager.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 
 LIBRARYOUT=libmicomponents.so
@@ -32,3 +32,5 @@ install: $(LIBRARYOUT)
 	install -D -m 0644 miButtonLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miButtonLamp.h
 	install -D -m 0644 miPlayWaveButtonLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miPlayWaveButtonLamp.h
 	install -D -m 0644 miVolume.h $(DESTDIR)/${includedir}/mi/micomponents/miVolume.h
+	install -D -m 0644 mibuttonLampMananger.h $(DESTDIR)/${includedir}/mi/micomponents/mibuttonLampMananger.h
+	install -D -m 0644 miComponentInterface.h $(DESTDIR)/${includedir}/mi/miComponentInterface/miVolume.h
