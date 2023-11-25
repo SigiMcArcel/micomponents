@@ -33,4 +33,4 @@ install: $(LIBRARYOUT)
 	install -D -m 0644 miPlayWaveButtonLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miPlayWaveButtonLamp.h
 	install -D -m 0644 miVolume.h $(DESTDIR)/${includedir}/mi/micomponents/miVolume.h
 	install -D -m 0644 mibuttonLampMananger.h $(DESTDIR)/${includedir}/mi/micomponents/mibuttonLampMananger.h
-	install -D -m 0644 miComponentInterface.h $(DESTDIR)/${includedir}/mi/miComponentInterface/miVolume.h
+	install -D -m 0644 miComponentInterface.h $(DESTDIR)/${includedir}/mi/micomponents/miComponentInterface.h
