@@ -18,5 +18,11 @@ namespace micomponents
 		virtual void emergencyStop(bool on) = 0;
 	};
 
+	class miPhoneNumberInterface
+	{
+	public:
+		virtual void PhoneNumberchanged(int number) = 0;
+	};
+
 }
 

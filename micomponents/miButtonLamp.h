@@ -1,7 +1,6 @@
 #pragma once
 #include <stdint.h>
 #include <string>
-#include <mi/miutils/Timer.h>
 #include "miLamp.h"
 #include "miButton.h"
 #include "miComponentInterface.h"

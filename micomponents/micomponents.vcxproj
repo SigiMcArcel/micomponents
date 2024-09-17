@@ -40,7 +40,10 @@
     <ClInclude Include="mibuttonLampMananger.h" />
     <ClInclude Include="miComponentInterface.h" />
     <ClInclude Include="miLamp.h" />
+    <ClInclude Include="miLedStrip.h" />
+    <ClInclude Include="miPhoneNumber.h" />
     <ClInclude Include="miPlayWaveButtonLamp.h" />
+    <ClInclude Include="miSevenSegment.h" />
     <ClInclude Include="miVolume.h" />
   </ItemGroup>
   <ItemGroup>
@@ -49,7 +52,10 @@
     <ClCompile Include="mibuttonLampMananger.cpp" />
     <ClCompile Include="miComponentInterface.cpp" />
     <ClCompile Include="miLamp.cpp" />
+    <ClCompile Include="miLedStrip.cpp" />
+    <ClCompile Include="miPhoneNumber.cpp" />
     <ClCompile Include="miPlayWaveButtonLamp.cpp" />
+    <ClCompile Include="miSevenSegment.cpp" />
     <ClCompile Include="miVolume.cpp" />
   </ItemGroup>
   <ItemGroup>
