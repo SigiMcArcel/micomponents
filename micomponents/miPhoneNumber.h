@@ -11,7 +11,7 @@ namespace micomponents
 		micomponents::miPhoneNumberInterface *_Callback;
 
 	public:
-		miPhoneNumber(mimodule::ModuleChannel* channel, int intervall, micomponents::miPhoneNumberInterface* callback)
+		miPhoneNumber(mimodule::ModuleChannel* channel, micomponents::miPhoneNumberInterface* callback)
 			:_Channel(channel)
 			, _Callback(callback)
 		{

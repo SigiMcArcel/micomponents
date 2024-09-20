@@ -9,7 +9,7 @@ namespace micomponents
 		mimodule::ModuleMiSevenSegment _Module;
 
 	public:
-		miSevenSegment(mimodule::ModuleMiSevenSegment& module, int intervall, double maxVolume)
+		miSevenSegment(mimodule::ModuleMiSevenSegment& module)
 			: _Module(module)
 		{
 			
