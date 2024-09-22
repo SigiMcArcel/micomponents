@@ -7,60 +7,90 @@ namespace micomponents
 	class mibuttonLampMananger
 	{
 	private:
-		std::vector<miLampInterface*> _LampControls;
-		std::vector<miEmergenceStopInterface*> _EmergencyStops;
+		std::vector<miLampInterface*> _Lamps;
+		std::vector<miButtonInterface*> _Buttons;
 
 	public:
-		bool registerLampControl(miLampInterface* interf)
+		bool registerLamp(miLampInterface* lampInterface)
 		{
-			if (interf == nullptr)
+			if (lampInterface == nullptr)
 			{
 				return false;
 			}
-			_LampControls.push_back(interf);
+			_Lamps.push_back(lampInterface);
 			return true;
 		}
-		bool registerEmergencyStop(miEmergenceStopInterface* interf)
+
+		bool registerButtons(miButtonInterface* buttonInterface)
 		{
-			if (interf == nullptr)
+			if (buttonInterface == nullptr)
 			{
 				return false;
 			}
-			_EmergencyStops.push_back(interf);
+			_Buttons.push_back(buttonInterface);
 			return true;
 		}
-		bool registerAll(miLampInterface* interfLc, miEmergenceStopInterface* interfEs)
+		
+		bool registerAll(miLampInterface* lampInterface, miButtonInterface* buttonInterface)
 		{
-			if (!registerLampControl(interfLc))
+			if (!registerLamp(lampInterface))
 			{
 				return false;
 			}
-			return registerEmergencyStop(interfEs);
+			return registerButtons(buttonInterface);
 		}
 
 		void emergencyStopAll(bool on)
 		{
-			std::vector<miEmergenceStopInterface*>::iterator iterEmerge;
-			for (iterEmerge = _EmergencyStops.begin(); iterEmerge < _EmergencyStops.end(); ++iterEmerge)
-			{
-				
-				(*iterEmerge)->emergencyStop(on);
-			}
+			disableButtonEventAll(on);
+			stopActivitiesAll();
+			LampOffAll();
 		}
 
 		void lampControlAll(bool on)
 		{
 			std::vector<miLampInterface*>::iterator iterLampc;
-			for (iterLampc = _LampControls.begin(); iterLampc < _LampControls.end(); ++iterLampc)
+			for (iterLampc = _Lamps.begin(); iterLampc < _Lamps.end(); ++iterLampc)
 			{
 				(*iterLampc)->lampControl(on);
 			}
 		}
 
+		void disableButtonEvent(const std::string& name,bool on)
+		{
+			std::vector<miButtonInterface*>::iterator iterButtons;
+			for (iterButtons = _Buttons.begin(); iterButtons < _Buttons.end(); ++iterButtons)
+			{
+				if ((*iterButtons)->name() == name)
+				{
+					(*iterButtons)->disableButtonEvent(on);
+				}
+			}
+		}
+
+		void disableButtonEventAll(bool on)
+		{
+			std::vector<miButtonInterface*>::iterator iterButtons;
+			for (iterButtons = _Buttons.begin(); iterButtons < _Buttons.end(); ++iterButtons)
+			{
+				(*iterButtons)->disableButtonEvent(on);
+			}
+		}
+
+		void stopActivitiesAll()
+		{
+			std::vector<miButtonInterface*>::iterator iterButtons;
+			for (iterButtons = _Buttons.begin(); iterButtons < _Buttons.end(); ++iterButtons)
+			{
+				(*iterButtons)->stopActivities();
+			}
+		}
+
+	
 		void LampOn(const std::string& name)
 		{
 			std::vector<miLampInterface*>::iterator iterLampc;
-			for (iterLampc = _LampControls.begin(); iterLampc < _LampControls.end(); ++iterLampc)
+			for (iterLampc = _Lamps.begin(); iterLampc < _Lamps.end(); ++iterLampc)
 			{
 				if ((*iterLampc)->name() == name)
 				{
@@ -72,7 +102,7 @@ namespace micomponents
 		void LampOff(const std::string& name)
 		{
 			std::vector<miLampInterface*>::iterator iterLampc;
-			for (iterLampc = _LampControls.begin(); iterLampc < _LampControls.end(); ++iterLampc)
+			for (iterLampc = _Lamps.begin(); iterLampc < _Lamps.end(); ++iterLampc)
 			{
 				if ((*iterLampc)->name() == name)
 				{
@@ -81,6 +111,25 @@ namespace micomponents
 
 			}
 		}
+
+		void LampOnAll()
+		{
+			std::vector<miLampInterface*>::iterator iterLampc;
+			for (iterLampc = _Lamps.begin(); iterLampc < _Lamps.end(); ++iterLampc)
+			{
+				(*iterLampc)->lampOn();
+			}
+		}
+
+		void LampOffAll()
+		{
+			std::vector<miLampInterface*>::iterator iterLampc;
+			for (iterLampc = _Lamps.begin(); iterLampc < _Lamps.end(); ++iterLampc)
+			{
+				(*iterLampc)->lampOff();
+			}
+		}
+		
 	};
 }
 

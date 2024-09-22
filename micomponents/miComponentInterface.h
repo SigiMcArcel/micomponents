@@ -12,10 +12,12 @@ namespace micomponents
 		virtual const std::string name() = 0;
 	};
 
-	class miEmergenceStopInterface
+	class miButtonInterface
 	{
 	public:
-		virtual void emergencyStop(bool on) = 0;
+		virtual void disableButtonEvent(bool on) = 0;
+		virtual void stopActivities() = 0;
+		virtual const std::string name() = 0;
 	};
 
 	class miPhoneNumberInterface

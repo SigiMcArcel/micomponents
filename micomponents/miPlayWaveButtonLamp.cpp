@@ -2,62 +2,25 @@
 
 void micomponents::miPlayWaveButtonLamp::ButtonDown(const std::string& name)
 {
-	_Wave.play();
+	printf("micomponents::miPlayWaveButtonLamp::ButtonDown %s\n", name.c_str());
+	_Audio.playWave(_Name,false, _Loop);
 	miButtonLamp::ButtonDown(name);
-	
-	/*if (_Behaviour == ButtonType::Switch)
-	{
-		_Wave.play();
-	}
-	else  if (_Behaviour == ButtonType::PushButtonToggle)
-	{
-			_Wave.play();
-			_Lamp.lampOn();
-	}*/
 }
 
 void micomponents::miPlayWaveButtonLamp::ButtonUp(const std::string& name)
 {
+	printf("micomponents::miPlayWaveButtonLamp::ButtonUp %s\n", name.c_str());
 	miButtonLamp::ButtonUp(name);
 	if (_Behaviour == ButtonType::Switch)
 	{
-		_Wave.stop();
+		_Audio.stopWave(_Name);
 	}
 }
 
 void micomponents::miPlayWaveButtonLamp::ButtonToggle(bool state, const std::string& name)
 {
 	//miButtonLamp::ButtonToggle(state,_Name);
-	
-	
-}
 
-void micomponents::miPlayWaveButtonLamp::emergencyStop(bool on)
-{
-	_EmergencyStop = on;
-	if (_EmergencyStop)
-	{
-		printf("emergencyStop %s\n", _Name.c_str());
-		_Lamp.off();
-		_Wave.stop();
-	}
-	else
-	{
-		bool state = _Button.getState();
-		ButtonToggle(state,_Name);
-		miButtonLamp::ButtonToggle(state,_Name);
-		if (state)
-		{
-			ButtonDown(_Name);
-			miButtonLamp::ButtonDown(_Name);
-		}
-		else
-		{
-			ButtonUp(_Name);
-			miButtonLamp::ButtonUp(_Name);
-		}
-
-	}
 }
 
 // Geerbt über EventListener
@@ -65,13 +28,13 @@ void micomponents::miPlayWaveButtonLamp::eventOccured(void* sender, const std::s
 {
 	if (_Behaviour == ButtonType::PushButtonToggle)
 	{
-		if (_IsPlaying && !_Wave.isPlaying())
+		if (_IsPlaying && !_Audio.isPlaying(_Name))
 		{
-			_Lamp.off();
+			off();
 			_IsPlaying = false;
 			return;
 		}
-		if (!_IsPlaying && _Wave.isPlaying())
+		if (!_IsPlaying && _Audio.isPlaying(_Name))
 		{
 			_IsPlaying = true;
 		}

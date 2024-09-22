@@ -242,19 +242,14 @@ bool micomponents::miLedStrip::serialWrite(unsigned char* data, int count)
 }
 
 
-void micomponents::miLedStrip::startLED(LedStripMode mode, int intervalDivisor, int maxLed)
+void micomponents::miLedStrip::startLED()
 {
-	_Mode = mode;
-
-	_IntervalDivisor = intervalDivisor;
-
-	_NumberOfLedsPlaying = maxLed;
 	if (_IntervalDivisor == 0)
 	{
 		_IntervalDivisor = _TimerIntervall;
 	}
 
-	if (mode == LedStripMode::runningSingleInvert)
+	if (_Mode == LedStripMode::runningSingleInvert)
 	{
 		setLeds(_NumberOfLedsPlaying);
 	}

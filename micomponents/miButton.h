@@ -2,6 +2,8 @@
 #include <string>
 #include <mi/mimodules/ModuleInterface.h>
 #include <mi/mimodules/ModuleChannel.h>
+#include "miComponentInterface.h"
+
 namespace micomponents
 {
     class miButtonEventInterface
@@ -13,7 +15,10 @@ namespace micomponents
         virtual void ButtonToggle(bool state, const std::string& name) = 0;
     };
 
-	class miButton :public mimodule::ModuleValueChangedEvent
+	class miButton 
+        :public mimodule::ModuleValueChangedEvent
+        ,public micomponents::miButtonInterface
+       
 	{
         enum class ButtonState
         {
@@ -29,68 +34,47 @@ namespace micomponents
         bool _Toggle;
         bool _ButtonState;
         bool _ButtonStateLast;
+        bool _DisableButtonEvent;
        
         void handleButton()
         {
+            bool buttonClicked = false;
+            bool buttonToggeld = false;
             if (!_ButtonState && _ButtonStateLast)
             {
-                _ButtonEvent->ButtonClick(_Name);
+                buttonClicked = true;
             }
             _ButtonStateLast = _ButtonState;
-
-            if (_ButtonState)
-            {
-                _ButtonEvent->ButtonDown(_Name);
-            }
-            else
-            {
-                _ButtonEvent->ButtonUp(_Name);
-            }
-
             if (_ButtonState && !_Toggle)
             {
                 _Toggle = true;
-                _ButtonEvent->ButtonToggle(_Toggle, _Name);
-
-            }else if (_ButtonState && _Toggle)
+                buttonToggeld = true;
+            }
+            else if (_ButtonState && _Toggle)
             {
                 _Toggle = false;
-                _ButtonEvent->ButtonToggle(_Toggle,_Name);
+                buttonToggeld = true;
             }
 
-
-            //switch (_ButtonType)
-            //{
-            //    case ButtonType::PushButton:
-            //    case ButtonType::Switch:
-            //    {
-            //        if (!val)
-            //        {
-            //            _ButtonEvent->ButtonOff();
-            //        }
-            //        else
-            //        {
-            //            _ButtonEvent->ButtonOn();
-            //        }
-            //        break;
-            //    }
-            //    case ButtonType::PushButtonToggle:
-            //    {
-            //        if (val && !_Toggle)
-            //        {
-            //            _Toggle = true;
-            //            _ButtonEvent->ButtonOn();
-
-            //        }
-            //        if (val && _Toggle)
-            //        {
-            //            _Toggle = false;
-            //            _ButtonEvent->ButtonOff();
-            //        }
-            //        break;
-            //    }
-
-            //}
+            if (!_DisableButtonEvent)
+            {
+                if (buttonClicked)
+                {
+                    _ButtonEvent->ButtonClick(_Name);
+                }
+                if (buttonToggeld)
+                {
+                    _ButtonEvent->ButtonToggle(_Toggle, _Name);
+                }
+                if (_ButtonState)
+                {
+                    _ButtonEvent->ButtonDown(_Name);
+                }
+                else
+                {
+                    _ButtonEvent->ButtonUp(_Name);
+                }
+            }
         }
 
     public:
@@ -102,6 +86,7 @@ namespace micomponents
             , _Name(name)
             , _Toggle(false)
             , _ButtonState(false)
+            , _DisableButtonEvent(false)
         {
             if (_Channel != nullptr)
             {
@@ -113,6 +98,20 @@ namespace micomponents
             }
         }
 
+        virtual void stopActivities()
+        {
+
+        }
+
+        virtual void disableButtonEvent(bool on)
+        {
+            _DisableButtonEvent = on;
+        }
+
+        virtual const std::string name()
+        {
+            return _Name;
+        }
 
         bool getState() const
         {

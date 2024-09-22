@@ -44,7 +44,7 @@
     <ClInclude Include="miPhoneNumber.h" />
     <ClInclude Include="miPlayWaveButtonLamp.h" />
     <ClInclude Include="miSevenSegment.h" />
-    <ClInclude Include="miVolume.h" />
+    <ClInclude Include="miAudio.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="miButton.cpp" />
@@ -56,7 +56,7 @@
     <ClCompile Include="miPhoneNumber.cpp" />
     <ClCompile Include="miPlayWaveButtonLamp.cpp" />
     <ClCompile Include="miSevenSegment.cpp" />
-    <ClCompile Include="miVolume.cpp" />
+    <ClCompile Include="miAudio.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />

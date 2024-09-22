@@ -117,11 +117,8 @@ namespace micomponents
 			}
 		}
 
-		
-
-
 		// Geerbt über EventListener
-		virtual void eventOccured(void* sender, const std::string& name) override;
+		virtual void eventOccured(void* sender, const std::string& name);
 
 	};
 }

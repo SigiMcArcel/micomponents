@@ -116,11 +116,24 @@ namespace micomponents
 		bool setLeds(int cnt);
 		bool smoothingLed(int number, bool start);
 
-		void startLED(LedStripMode mode, int intervalDivisor, int maxLed);
+		void startLED();
 		void stopLED();
 		void setMode(LedStripMode mode)
 		{
 			_Mode = mode;
+		}
+		micomponents::LedStripMode getMode()
+		{
+			return _Mode;
+		}
+		micomponents::LedStripMode stepMode()
+		{
+			_Mode = static_cast<micomponents::LedStripMode>(static_cast<int>(_Mode) + 1);
+			if (_Mode == micomponents::LedStripMode::runningSingleInvert)
+			{
+				_Mode = micomponents::LedStripMode::full;
+			}
+			return _Mode;
 		}
 	};
 }

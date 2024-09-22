@@ -1,16 +1,17 @@
 #pragma once
 #include "miButtonLamp.h"
-#include <mi/misound/Wave.h>
+#include <mi/misound/Audio.h>
 #include <mi/miutils/Timer.h>
 
 namespace micomponents
 {
-	class miPlayWaveButtonLamp : public micomponents::miButtonLamp, public miutils::EventListener, public miEmergenceStopInterface
+	class miPlayWaveButtonLamp : public micomponents::miButtonLamp
 	{
 	private:
-		misound::Wave _Wave;
+		misound::Audio _Audio;
 		miutils::Timer _MonitoringTimer;
 		bool _IsPlaying;
+		bool _Loop;
 		
 	public:
 		miPlayWaveButtonLamp(
@@ -20,8 +21,8 @@ namespace micomponents
 			mimodule::ModuleChannel* outputChannel,
 			const std::string& name,
 			ButtonType buttonType,
+			const misound::Audio& audio,
 			bool inverse,
-			std::string wavePath,
 			bool waveloop
 		)
 			:miButtonLamp(
@@ -33,10 +34,12 @@ namespace micomponents
 				name,
 				buttonType,
 				false)
-			, _Wave(wavePath + std::string("/") + name + std::string(".wav"), name, waveloop)
-			, _MonitoringTimer("Monitring",this )
+			, _Audio(audio)
+			, _MonitoringTimer("Monitoring",this )
 			, _IsPlaying(false)
+			, _Loop(waveloop)
 		{
+			_Audio.addWave(_Name,  _Loop);
 			_MonitoringTimer.Start(20);
 		};
 
@@ -50,10 +53,13 @@ namespace micomponents
 		void ButtonUp(const std::string& name) override;
 		void ButtonToggle(bool state, const std::string& name) override;
 	
-		// Geerbt über miEmergenceStopInterface
-		virtual void emergencyStop(bool on) override;
+		void stopActivities() override
+		{
+			_Audio.stopWave(_Name);
+		}
 		void eventOccured(void* sender, const std::string& name) override;
 
 	};
+
 
 }
