@@ -36,10 +36,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="miButton.h" />
+    <ClInclude Include="miButtonBase.h" />
     <ClInclude Include="miButtonLamp.h" />
-    <ClInclude Include="mibuttonLampMananger.h" />
-    <ClInclude Include="miComponentInterface.h" />
+    <ClInclude Include="miComponentManager.h" />
+    <ClInclude Include="miComponentBase.h" />
     <ClInclude Include="miLamp.h" />
+    <ClInclude Include="miLampBase.h" />
     <ClInclude Include="miLedStrip.h" />
     <ClInclude Include="miPhoneNumber.h" />
     <ClInclude Include="miPlayWaveButtonLamp.h" />
@@ -48,10 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="miButton.cpp" />
+    <ClCompile Include="miButtonBase.cpp" />
     <ClCompile Include="miButtonLamp.cpp" />
-    <ClCompile Include="mibuttonLampMananger.cpp" />
-    <ClCompile Include="miComponentInterface.cpp" />
+    <ClCompile Include="miComponentManager.cpp" />
+    <ClCompile Include="miComponentBase.cpp" />
     <ClCompile Include="miLamp.cpp" />
+    <ClCompile Include="miLampBase.cpp" />
     <ClCompile Include="miLedStrip.cpp" />
     <ClCompile Include="miPhoneNumber.cpp" />
     <ClCompile Include="miPlayWaveButtonLamp.cpp" />
@@ -118,7 +122,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <RemotePostBuildEvent>
-      <Command>cp $(RemoteDebuggerCommand) /usr/lib</Command>
+      <Command>cp ~/projects/micomponents/bin/ARM64/Debug//libmicomponents.so /usr/lib </Command>
     </RemotePostBuildEvent>
     <Link>
       <LibraryDependencies>pthread;miutils;mimodules;misound</LibraryDependencies>

@@ -1,5 +1,6 @@
 #pragma once
-#include <mi/miutils/Timer.h>
+#include <mi/miutils/Time.h>
+#include "miComponentBase.h"
 
 namespace micomponents
 {
@@ -15,7 +16,8 @@ namespace micomponents
 
 	}LedStripMode;
 
-	class miLedStrip : public miutils::EventListener
+	class miLedStrip 
+		: public micomponents::miComponentBase
 	{
 	private:
 		bool _IsOpen;
@@ -36,15 +38,13 @@ namespace micomponents
 
 		int _Fd;
 		unsigned char* _LedState;
-		miutils::Timer _Timer;
 		std::string _SerialDevice;
 
-		int _IntervalDivisor;
-		int _TimerIntervall;
-		int _IntervalCnt;
+		int _Intervall;
 		unsigned char _SmoothCnt;
 		bool _SmoothDir;
 		bool _Running;
+		miutils::Time _Time;
 
 		bool serialOpen();
 		bool serialClose();
@@ -56,16 +56,14 @@ namespace micomponents
 		bool fillingLED(unsigned char r, unsigned char g, unsigned char b, int numberOfLed);
 		bool toggleLED(unsigned char r, unsigned char g, unsigned char b, int numberOfLed);
 		bool smoothLed();
-
-		// Geerbt über iEventListener
-		virtual void eventOccured(void* sender, const std::string& name) override;
-
-	
+		bool handleLeds();
 
 	public:
-		miLedStrip(int numberofLeds, int intervall, const std::string& serialDevice)
-			:_IsOpen(false)
+		miLedStrip(const std::string name, int numberofLeds, int intervall, const std::string& serialDevice)
+			: miComponentBase(name, intervall)
+			, _IsOpen(false)
 			, _NumberOfLeds(numberofLeds)
+			, _NumberOfLedsPlaying(numberofLeds)
 			, _RunningLedCnt(0)
 			, _ToggleLedState(0)
 			, _StartRunningLED(false)
@@ -78,20 +76,18 @@ namespace micomponents
 			, _LastMode(LedStripMode::off)
 			, _Fd(-1)
 			, _LedState(NULL)
-			, _Timer("LEDStrip", this)
 			, _SerialDevice(serialDevice)
-			, _IntervalDivisor(intervall)
-			, _TimerIntervall(intervall)
-			, _IntervalCnt(0)
+			, _Intervall(intervall)
 			, _SmoothCnt(0)
 			, _SmoothDir(0)
+			, _Time()
 
 		{
 			if (serialOpen())
 			{
 				_IsOpen = true;
 			}
-
+			
 			_LedState = (unsigned char*)malloc(numberofLeds * 3);
 			if (_LedState == NULL)
 			{
@@ -99,13 +95,11 @@ namespace micomponents
 			}
 			memset(_LedState, 0, numberofLeds * 3);
 			showLed();
-			_Timer.Start(_TimerIntervall);
 
 		}
 
 		~miLedStrip()
 		{
-			_Timer.Stop();
 			serialClose();
 			free(_LedState);
 		}
@@ -120,6 +114,8 @@ namespace micomponents
 		void stopLED();
 		void setMode(LedStripMode mode)
 		{
+			if (_DisableOutputs)
+				return;
 			_Mode = mode;
 		}
 		micomponents::LedStripMode getMode()
@@ -128,13 +124,33 @@ namespace micomponents
 		}
 		micomponents::LedStripMode stepMode()
 		{
+			if (_DisableOutputs)
+				return micomponents::LedStripMode::off;
+
+			
 			_Mode = static_cast<micomponents::LedStripMode>(static_cast<int>(_Mode) + 1);
 			if (_Mode == micomponents::LedStripMode::runningSingleInvert)
 			{
 				_Mode = micomponents::LedStripMode::full;
 			}
+			printf("micomponents::miLedStrip::stepMode() %s %d", _Name.c_str(), static_cast<int>(_Mode));
 			return _Mode;
 		}
+
+		virtual bool componentProcess(int rootInterval, int tick) override;
+		virtual void disableOutputs(bool disable) override
+		{
+			miComponentBase::disableOutputs(disable);
+			if (_DisableOutputs)
+			{
+				setMode(micomponents::LedStripMode::off);
+			}
+			else
+			{
+				setMode(_Mode);
+			}
+		}
+
 	};
 }
 

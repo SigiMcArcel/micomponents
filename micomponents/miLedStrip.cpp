@@ -184,84 +184,7 @@ bool micomponents::miLedStrip::smoothLed()
 	return false;
 }
 
-bool micomponents::miLedStrip::serialOpen()
-{
-	struct termios tio;
-	struct termios stdio;
-	struct termios old_stdio;
-
-
-	tcgetattr(STDOUT_FILENO, &old_stdio);
-
-	memset(&stdio, 0, sizeof(stdio));
-	stdio.c_iflag = 0;
-	stdio.c_oflag = 0;
-	stdio.c_cflag = 0;
-	stdio.c_lflag = 0;
-	stdio.c_cc[VMIN] = 1;
-	stdio.c_cc[VTIME] = 0;
-	tcsetattr(STDOUT_FILENO, TCSANOW, &stdio);
-	tcsetattr(STDOUT_FILENO, TCSAFLUSH, &stdio);
-	fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);       // make the reads non-blocking
-
-	memset(&tio, 0, sizeof(tio));
-	tio.c_iflag = 0;
-	tio.c_oflag = 0;
-	tio.c_cflag = CS8 | CREAD | CLOCAL;           // 8n1, see termios.h for more information
-	tio.c_lflag = 0;
-	tio.c_cc[VMIN] = 1;
-	tio.c_cc[VTIME] = 5;
-
-	_Fd = open(_SerialDevice.c_str(), O_RDWR | O_NONBLOCK);
-	if (_Fd == -1)
-	{
-		return false;
-	}
-	cfsetospeed(&tio, B115200);            // 115200 baud
-	cfsetispeed(&tio, B115200);            // 115200 baud
-
-	tcsetattr(_Fd, TCSANOW, &tio);
-	return true;
-}
-
-bool micomponents::miLedStrip::serialClose()
-{
-	close(_Fd);
-	_Fd = -1;
-	return true;
-}
-
-bool micomponents::miLedStrip::serialWrite(unsigned char* data, int count)
-{
-	if (_Fd == -1)
-	{
-		return false;
-	}
-	write(_Fd, data, count);
-	return true;
-}
-
-
-void micomponents::miLedStrip::startLED()
-{
-	if (_IntervalDivisor == 0)
-	{
-		_IntervalDivisor = _TimerIntervall;
-	}
-
-	if (_Mode == LedStripMode::runningSingleInvert)
-	{
-		setLeds(_NumberOfLedsPlaying);
-	}
-	_Running = true;
-}
-
-void micomponents::miLedStrip::stopLED()
-{
-	_Mode = LedStripMode::off;
-}
-
-void micomponents::miLedStrip::eventOccured(void* sender, const std::string& name)
+bool micomponents::miLedStrip::handleLeds()
 {
 	if (_StartSmooth)
 	{
@@ -292,7 +215,8 @@ void micomponents::miLedStrip::eventOccured(void* sender, const std::string& nam
 			setLED(0, 0, 0, _StartSmoothingLED);
 		}
 	}
-	if ((_IntervalCnt % _IntervalDivisor) == 0)
+
+	if (_Time.elapsed(_Intervall))
 	{
 
 		if (_Running)
@@ -345,11 +269,100 @@ void micomponents::miLedStrip::eventOccured(void* sender, const std::string& nam
 			}
 			_LastMode = _Mode;
 		}
+		else
+		{
+			clearLeds(_NumberOfLedsPlaying);
+		}
+		showLed();
 	}
-	if ((_Mode != LedStripMode::off) && (_Mode != LedStripMode::full))
-	{
-
-	}
-	showLed();
-	_IntervalCnt++;
+	return true;
 }
+
+bool micomponents::miLedStrip::serialOpen()
+{
+	struct termios tty;
+	
+	_Fd = open(_SerialDevice.c_str(), O_RDWR | O_NONBLOCK);
+	if (_Fd == -1)
+	{
+		return false;
+	}
+	// Aktuelle Einstellungen der seriellen Schnittstelle abrufen
+	if (tcgetattr(_Fd, &tty) != 0) {
+		printf("Fehler beim Abrufen der Attribute");
+		return false;
+	}
+	cfsetospeed(&tty, B115200);            // 115200 baud
+	cfsetispeed(&tty, B115200);            // 115200 baud
+
+	// 8 Datenbits, 1 Stoppbit, keine Parität
+	tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8;  // 8 Datenbits
+	tty.c_cflag &= ~PARENB;                      // Keine Parität
+	tty.c_cflag &= ~CSTOPB;                      // 1 Stoppbit
+	tty.c_cflag &= ~CRTSCTS;                     // Keine Hardware-Flow-Control
+	tty.c_cflag |= CLOCAL | CREAD;               // Lokale Verbindung und Empfang aktivieren
+
+	// Keine Software-Flow-Control (XON, XOFF)
+	tty.c_iflag &= ~(IXON | IXOFF | IXANY);
+
+	// Keine Echo-Optionen und keine Interpretation von Eingabezeichen
+	tty.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+
+	// Keine Ausgabeverarbeitung
+	tty.c_oflag &= ~OPOST;
+
+	// Minimal 1 Zeichen lesen und 1 Sekunde timeout
+	tty.c_cc[VMIN] = 1;
+	tty.c_cc[VTIME] = 1;
+
+	// Neue Einstellungen sofort übernehmen
+	if (tcsetattr(_Fd, TCSANOW, &tty) != 0) {
+		printf("Fehler beim Setzen der Attribute");
+		return false;
+	}
+	return true;
+}
+
+bool micomponents::miLedStrip::serialClose()
+{
+	close(_Fd);
+	_Fd = -1;
+	return true;
+}
+
+bool micomponents::miLedStrip::serialWrite(unsigned char* data, int count)
+{
+	if (_Fd == -1)
+	{
+		return false;
+	}
+	write(_Fd, data, count);
+	return true;
+}
+
+void micomponents::miLedStrip::startLED()
+{
+	printf("micomponents::miLedStrip::startLED() %s", _Name.c_str());
+	if (_Mode == LedStripMode::runningSingleInvert)
+	{
+		setLeds(_NumberOfLedsPlaying);
+	}
+	_Running = true;
+}
+
+void micomponents::miLedStrip::stopLED()
+{
+	_Running = false;
+}
+
+bool micomponents::miLedStrip::componentProcess(int rootInterval, int tick)
+{
+	if (!miComponentBase::componentProcess(rootInterval, tick))
+	{
+		return false;
+	}
+	handleLeds();
+	
+	return false;
+}
+

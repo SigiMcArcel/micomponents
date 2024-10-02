@@ -2,12 +2,28 @@
 
 void micomponents::miPhoneNumber::ValueChanged(mimodule::ModuleValue& value, const std::string& id)
 {
-	if (_Callback)
+	if(!_DisableInputs)
+		_PhoneNumber << value;
+
+	_PhoneNumberChanged = true;
+}
+
+bool micomponents::miPhoneNumber::componentProcess(int rootInterval, int tick)
+{
+	if (!miComponentBase::componentProcess(rootInterval, tick))
 	{
-		int number = 0;
-		number << value;
-		_Callback->PhoneNumberchanged(number);
+		return false;
 	}
+	if (_PhoneNumberChanged)
+	{
+		_PhoneNumberChanged = false;
+		if (_Callback)
+		{
+			_Callback->PhoneNumberchanged(_PhoneNumber);
+		}
+	}
+
+	return true;
 }
 
 

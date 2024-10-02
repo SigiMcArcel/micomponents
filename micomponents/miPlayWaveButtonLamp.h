@@ -1,63 +1,98 @@
 #pragma once
 #include "miButtonLamp.h"
 #include <mi/misound/Audio.h>
-#include <mi/miutils/Timer.h>
 
 namespace micomponents
 {
-	class miPlayWaveButtonLamp : public micomponents::miButtonLamp
+	class miPlayWaveButtonLamp
+		: public micomponents::miButtonLamp
 	{
 	private:
-		misound::Audio _Audio;
-		miutils::Timer _MonitoringTimer;
+		misound::AudioInterface& _Audio;
 		bool _IsPlaying;
 		bool _Loop;
-		
+		std::string _WaveName;
+
 	public:
 		miPlayWaveButtonLamp(
+			const std::string& name,
+			int buttonHandleCyle,
 			LampType lampType,
-			int32_t flashTime,
+			int flashTime,
 			mimodule::ModuleChannel* inputChannel,
 			mimodule::ModuleChannel* outputChannel,
-			const std::string& name,
 			ButtonType buttonType,
-			const misound::Audio& audio,
+			misound::AudioInterface& audio,
 			bool inverse,
 			bool waveloop
 		)
 			:miButtonLamp(
+				name,
+				buttonHandleCyle,
 				lampType,
 				flashTime,
 				inputChannel,
 				outputChannel,
 				nullptr,
-				name,
 				buttonType,
 				false)
 			, _Audio(audio)
-			, _MonitoringTimer("Monitoring",this )
 			, _IsPlaying(false)
 			, _Loop(waveloop)
+			, _WaveName(name)
 		{
-			_Audio.addWave(_Name,  _Loop);
-			_MonitoringTimer.Start(20);
+			_Audio.addWave(_WaveName, _Loop);
 		};
 
 		~miPlayWaveButtonLamp()
 		{
-			_MonitoringTimer.Stop();
-		};
-		
 
-		void ButtonDown(const std::string& name) override;
-		void ButtonUp(const std::string& name) override;
-		void ButtonToggle(bool state, const std::string& name) override;
-	
-		void stopActivities() override
+		};
+
+
+		virtual void ButtonDown(const std::string& name) override;
+		virtual void ButtonUp(const std::string& name) override;
+		virtual void ButtonToggle(bool state, const std::string& name) override;
+
+		virtual void disableOutputs(bool disable) override
 		{
-			_Audio.stopWave(_Name);
+			miComponentBase::disableOutputs(disable);
+			if (miComponentBase::_DisableOutputs)
+			{
+				_Audio.stopWave(_WaveName);
+			}
+			else
+			{
+				if (_ButtonState)
+				{
+					_Audio.playWave(_WaveName, false, _Loop);
+				}
+			}
 		}
-		void eventOccured(void* sender, const std::string& name) override;
+
+		virtual bool componentProcess(int rootInterval, int tick) override
+		{
+			if (!miButtonLamp::componentProcess(rootInterval, tick))
+			{
+				return false;
+			}
+			if (_Behaviour == ButtonType::PushButtonToggle)
+			{
+				if (_IsPlaying && !_Audio.isPlaying(_WaveName))
+				{
+					off();
+					_IsPlaying = false;
+				}
+				else
+				{
+					if (!_IsPlaying && _Audio.isPlaying(_WaveName))
+					{
+						_IsPlaying = true;
+					}
+				}
+			}
+			return true;
+		}
 
 	};
 

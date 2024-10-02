@@ -20,7 +20,7 @@ void micomponents::miSevenSegment::setSegment(int segment, int value)
 }
 void micomponents::miSevenSegment::setValue(int value)
 {
-	int max = 999999999;
+	int max = 99999999;
 	if (value > max)
 	{
 		return;
@@ -33,3 +33,4 @@ void micomponents::miSevenSegment::setValue(int value)
 
 	}
 }
+

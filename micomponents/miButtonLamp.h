@@ -13,14 +13,52 @@ namespace micomponents
 		Switch,//button hold -> lamp on, button released lamp off
 	};
 
-	class miButtonLamp : public miButtonEventInterface, public miButton,public miLamp
+	class miButtonLamp 
+		: public miComponentBase
+		, public miButtonBase
+		, public miLampBase
 	{
 	protected:
-		miButtonEventInterface* _ButtonEvent;
-		std::string _Name;
 		bool _LockButton;
 		ButtonType _Behaviour;
 		bool _EmergencyStop;
+
+	public:
+		miButtonLamp(
+			const std::string& name,
+			int buttonHandleCyle,
+			LampType lampType, 
+			int flashTime, 
+			mimodule::ModuleChannel* inputChannel, 
+			mimodule::ModuleChannel* outputChannel,
+			micomponents::miButtonEventInterface* buttonEvent, 
+			ButtonType buttonType,
+			bool inverse = false)
+			: miComponentBase(name + "_Button", buttonHandleCyle)
+			, miButtonBase(name + "_Button",inputChannel,buttonEvent, inverse) //name,channel,buttonEvent,inverse
+			, miLampBase(flashTime,lampType, outputChannel)
+			, _Behaviour(buttonType)
+			, _EmergencyStop(false)
+		{
+			
+		};
+
+		virtual const std::string name()
+		{
+			return _Name;
+		}
+
+		virtual bool componentProcess(int rootInterval, int tick) override
+		{
+			if (!miComponentBase::componentProcess(rootInterval, tick))
+			{
+				return false;
+			}
+			_LampDisable = _DisableOutputs;
+			miButtonBase::handleButton(_Name);
+			miLampBase::handleLamp();
+			return true;
+		}
 
 		// Geerbt über miButtonEventInterface
 		virtual void ButtonDown(const std::string& name) override;
@@ -28,34 +66,6 @@ namespace micomponents
 		virtual void ButtonClick(const std::string& name) override;
 		virtual void ButtonToggle(bool state, const std::string& name) override;
 
-		virtual void stopActivities() override
-		{
-
-		}
-
-	public:
-		miButtonLamp(
-			LampType lampType, 
-			int32_t flashTime, 
-			mimodule::ModuleChannel* inputChannel, 
-			mimodule::ModuleChannel* outputChannel,
-			micomponents::miButtonEventInterface* buttonEvent, 
-			const std::string& name, 
-			ButtonType buttonType,
-			bool inverse = false)
-			: miButton(inputChannel, this, inverse,name + "_Button")
-			, miLamp(lampType, flashTime, outputChannel, name + "_Lamp")
-			, _ButtonEvent(buttonEvent)
-			, _Name(name)
-			, _Behaviour(buttonType)
-			, _EmergencyStop(false)
-		{
-			
-		};
-
-		
-
-		
 	};
 }
 

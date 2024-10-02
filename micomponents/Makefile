@@ -27,10 +27,16 @@ install: $(LIBRARYOUT)
 	install -d $(DESTDIR)/${includedir}
 	install -d $(DESTDIR)/${includedir}/mi
 	install -d $(DESTDIR)/${includedir}/mi/micomponents
+	install -D -m 0644 miAudio.h $(DESTDIR)/${includedir}/mi/micomponents/miAudio.h
+	install -D -m 0644 miLedStrip.h $(DESTDIR)/${includedir}/mi/micomponents/miLedStrip.h
+	install -D -m 0644 miPhoneNumber.h $(DESTDIR)/${includedir}/mi/micomponents/miPhoneNumber.h
+	install -D -m 0644 miSevenSegment.h $(DESTDIR)/${includedir}/mi/micomponents/miSevenSegment.h
+	install -D -m 0644 miLampBase.h $(DESTDIR)/${includedir}/mi/micomponents/miLampBase.h
+	install -D -m 0644 miButtonBase.h $(DESTDIR)/${includedir}/mi/micomponents/miButtonBase.h
 	install -D -m 0644 miLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miLamp.h
 	install -D -m 0644 miButton.h $(DESTDIR)/${includedir}/mi/micomponents/miButton.h
 	install -D -m 0644 miButtonLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miButtonLamp.h
 	install -D -m 0644 miPlayWaveButtonLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miPlayWaveButtonLamp.h
 	install -D -m 0644 miVolume.h $(DESTDIR)/${includedir}/mi/micomponents/miVolume.h
-	install -D -m 0644 mibuttonLampMananger.h $(DESTDIR)/${includedir}/mi/micomponents/mibuttonLampMananger.h
-	install -D -m 0644 miComponentInterface.h $(DESTDIR)/${includedir}/mi/micomponents/miComponentInterface.h
+	install -D -m 0644 miComponentManager.h $(DESTDIR)/${includedir}/mi/micomponents/miComponentManager.h
+	install -D -m 0644 miComponentBase.h $(DESTDIR)/${includedir}/mi/micomponents/miComponentBase.h
