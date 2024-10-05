@@ -43,29 +43,12 @@ namespace micomponents
 			
 		};
 
-		virtual const std::string name()
-		{
-			return _Name;
-		}
-
-		virtual bool componentProcess(int rootInterval, int tick) override
-		{
-			if (!miComponentBase::componentProcess(rootInterval, tick))
-			{
-				return false;
-			}
-			_LampDisable = _DisableOutputs;
-			miButtonBase::handleButton(_Name);
-			miLampBase::handleLamp();
-			return true;
-		}
-
-		// Geerbt über miButtonEventInterface
+		virtual const std::string name() override;
+		virtual bool componentProcess(int rootInterval, int tick) override;
 		virtual void ButtonDown(const std::string& name) override;
 		virtual void ButtonUp(const std::string& name) override;
 		virtual void ButtonClick(const std::string& name) override;
 		virtual void ButtonToggle(bool state, const std::string& name) override;
-
 	};
 }
 

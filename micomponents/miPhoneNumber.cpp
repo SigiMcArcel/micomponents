@@ -22,7 +22,6 @@ bool micomponents::miPhoneNumber::componentProcess(int rootInterval, int tick)
 			_Callback->PhoneNumberchanged(_PhoneNumber);
 		}
 	}
-
 	return true;
 }
 

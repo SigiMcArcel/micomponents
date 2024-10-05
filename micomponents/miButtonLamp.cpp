@@ -1,5 +1,23 @@
 #include "miButtonLamp.h"
 
+const std::string micomponents::miButtonLamp::name()
+{
+	return _Name;
+}
+
+bool micomponents::miButtonLamp::componentProcess(int rootInterval, int tick)
+{
+	if (!miComponentBase::componentProcess(rootInterval, tick))
+	{
+		return false;
+	}
+	_LampDisable = _DisableOutputs;
+	_LampControl = _Check;
+	miButtonBase::handleButton(_Name);
+	miLampBase::handleLamp();
+	return true;
+}
+
 void micomponents::miButtonLamp::ButtonDown(const std::string& name)
 {
 	printf("micomponents::miButtonLamp::ButtonDown\n");

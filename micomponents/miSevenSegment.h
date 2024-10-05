@@ -8,37 +8,25 @@ namespace micomponents
 	{
 	private:
 		mimodule::ModuleMiSevenSegment& _Module;
+		int _Number[8];
+		int _LastNumber[8];
 
 	public:
 		miSevenSegment(const std::string name, int intervall, mimodule::ModuleMiSevenSegment& module)
-			: miComponentBase(name,intervall)
+			: miComponentBase(name, intervall)
 			, _Module(module)
+			, _Number{ - 1, -1, -1, -1, -1, -1, -1, -1}
+			, _LastNumber{-1, -1, -1, -1, -1, -1, -1, -1}
 		{
 			
 		}
+
 		void setSegment(int segment, int value);
 		void setValue(int value);
-		void setBlank()
-		{
-			uint8_t value = static_cast<uint8_t>(mimodule::ModuleMiSevenSegment::controlCommand::Blank);
-			std::string channelName("Control");
-			mimodule::ModuleChannel* channel = _Module.getChannel(channelName);
+		void setBlank();
 
-			if (channel == nullptr)
-			{
-				return;
-			}
-			value >> channel->value();
-		}
-
-		virtual void disableOutputs(bool disable) override
-		{
-			miComponentBase::disableOutputs(disable);
-			if (_DisableOutputs)
-			{
-				setBlank();
-			}
-		}
+		virtual void disableOutputs(bool disable) override;
+		virtual void check(bool check) override;
 	};
 }
 

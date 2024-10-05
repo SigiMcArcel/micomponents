@@ -20,44 +20,10 @@ namespace micomponents
 			
 		};
 
-		~miLamp()
-		{
-			
-		}
-
-		
-
-		
-		void lampOn()
-		{
-			on();
-		}
-
-		void lampOff()
-		{
-			off();
-		}
-
-		virtual const std::string name()
-		{
-			return _Name;
-		}
-
-		virtual bool componentProcess(int rootInterval,int tick) override
-		{
-			
-			if (!miComponentBase::componentProcess(rootInterval, tick))
-			{
-				return false;
-			}
-			_LampDisable = _DisableOutputs;
-			miLampBase::handleLamp();
-			return true;
-		}
-
-		
-
-
+		virtual void lampOn() override;
+		virtual void lampOff() override;
+		virtual const std::string name() override;
+		virtual bool componentProcess(int rootInterval, int tick) override;
 	};
 }
 

@@ -13,7 +13,7 @@ bool micomponents::miLedStrip::setLED(unsigned char r, unsigned char g, unsigned
 	{
 		return false;
 	}
-	if (number > _NumberOfLeds)
+	if (number >= _MaxNumberOfLeds)
 	{
 		return false;
 	}
@@ -31,7 +31,7 @@ bool micomponents::miLedStrip::showLed()
 	{
 		return false;
 	}
-	serialWrite(_LedState, _NumberOfLeds * 3);
+	serialWrite(_LedState, _MaxNumberOfLeds * 3);
 	serialWrite(&cmd, 1);
 	return true;
 }
@@ -41,18 +41,26 @@ bool micomponents::miLedStrip::clearLeds(int cnt)
 	int tmpLeds = 0;
 	if (cnt == -1)
 	{
-		tmpLeds = _NumberOfLeds * 3;
+		tmpLeds = _MaxNumberOfLeds;
 	}
 	else
 	{
-		if (cnt > _NumberOfLeds)
+		if (cnt > _MaxNumberOfLeds)
 		{
 			return false;
 		}
-		tmpLeds = cnt * 3;
+		tmpLeds = cnt;
 	}
-	memset(_LedState, 0, tmpLeds);
-
+	for (int i = 0; i < tmpLeds;i++)
+	{
+		if(i == _SmoothingLEDNumber)
+		{
+			continue;
+		}
+		_LedState[(i * 3) + 0] = 0;
+		_LedState[(i * 3) + 1] = 0;
+		_LedState[(i * 3) + 2] = 0;
+	}
 	return false;
 }
 
@@ -61,36 +69,47 @@ bool micomponents::miLedStrip::miLedStrip::setLeds(int cnt)
 	int tmpLeds = 0;
 	if (cnt == -1)
 	{
-		tmpLeds = _NumberOfLeds * 3;
+		tmpLeds = _MaxNumberOfLeds;
 	}
 	else
 	{
-		if (cnt > _NumberOfLeds)
+		if (cnt > _MaxNumberOfLeds)
 		{
 			return false;
 		}
-		tmpLeds = cnt * 3;
+		tmpLeds = cnt;
 	}
-	memset(_LedState, 254, tmpLeds);
+	for (int i = 0; i < tmpLeds; i++)
+	{
+		if (i == _SmoothingLEDNumber)
+		{
+			continue;
+		}
+		_LedState[(i * 3) + 0] = 254;
+		_LedState[(i * 3) + 1] = 254;
+		_LedState[(i * 3) + 2] = 254;
+	}
 
 	return false;
 }
 
-bool micomponents::miLedStrip::smoothingLed(int number, bool start)
+bool micomponents::miLedStrip::startSmoothingLed(bool start)
 {
+	if (_SmoothingLEDNumber == -1)
+	{
+		return false;
+	}
 	_StartSmooth = start;
-
-	_StartSmoothingLED = number;
-	return false;
+	return true;
 }
 
 bool micomponents::miLedStrip::runningSingleLed(unsigned char r, unsigned char g, unsigned char b, int numberOfLed)
 {
 	if (_RunningLedCnt > 0)
 	{
-		setLED(0, 0, 0, _RunningLedCnt - 1);
+		setLedIntern(0, 0, 0, _RunningLedCnt - 1);
 	}
-	setLED(r, g, b, _RunningLedCnt);
+	setLedIntern(r, g, b, _RunningLedCnt);
 	_RunningLedCnt++;
 	if (_RunningLedCnt > numberOfLed)
 	{
@@ -109,14 +128,13 @@ bool micomponents::miLedStrip::runningLed(unsigned char r, unsigned char g, unsi
 
 		do
 		{
-			setLED(0, 0, 0, cnt);
+			setLedIntern(0, 0, 0, cnt);
 			if ((cnt + 1) < numberOfLed)
 			{
-				setLED(125, 125, 125, cnt + 1);
+				setLedIntern(125, 125, 125, cnt + 1);
 			}
 			cnt += 2;
 		} while (cnt <= numberOfLed);
-
 	}
 	else
 	{
@@ -124,23 +142,21 @@ bool micomponents::miLedStrip::runningLed(unsigned char r, unsigned char g, unsi
 		_ToggleLedState = false;
 		do
 		{
-			setLED(125, 125, 125, cnt);
+			setLedIntern(125, 125, 125, cnt);
 			if ((cnt + 1) < numberOfLed)
 			{
-				setLED(0, 0, 0, cnt + 1);
+				setLedIntern(0, 0, 0, cnt + 1);
 			}
 			cnt += 2;
 		} while (cnt <= numberOfLed);
 	}
-
-
 	return true;
-
 }
+
 bool micomponents::miLedStrip::runningSingleLedInverted(unsigned char r, unsigned char g, unsigned char b, int numberOfLed)
 {
 	memset(_LedState, 254, numberOfLed * 3);
-	setLED(0, 0, 0, _RunningLedCnt);
+	setLedIntern(0, 0, 0, _RunningLedCnt);
 	_RunningLedCnt++;
 	if (_RunningLedCnt > numberOfLed)
 	{
@@ -152,14 +168,13 @@ bool micomponents::miLedStrip::runningSingleLedInverted(unsigned char r, unsigne
 
 bool micomponents::miLedStrip::fillingLED(unsigned char r, unsigned char g, unsigned char b, int numberOfLed)
 {
-	setLED(r, g, b, _RunningLedCnt);
+	setLedIntern(r, g, b, _RunningLedCnt);
 	_RunningLedCnt++;
 	if (_RunningLedCnt > numberOfLed)
 	{
 		_RunningLedCnt = 0;
 		clearLeds(numberOfLed);
 	}
-
 	return true;
 }
 
@@ -175,20 +190,14 @@ bool micomponents::miLedStrip::toggleLED(unsigned char r, unsigned char g, unsig
 		_ToggleLedState = false;
 		setLeds(numberOfLed);
 	}
-
 	return true;
-}
-
-bool micomponents::miLedStrip::smoothLed()
-{
-	return false;
 }
 
 bool micomponents::miLedStrip::handleLeds()
 {
 	if (_StartSmooth)
 	{
-		setLED(_SmoothCnt, _SmoothCnt, _SmoothCnt, _StartSmoothingLED);
+		setLED(_SmoothCnt, _SmoothCnt, _SmoothCnt, _SmoothingLEDNumber);
 
 		if (!_SmoothDir)
 		{
@@ -206,19 +215,14 @@ bool micomponents::miLedStrip::handleLeds()
 				_SmoothDir = false;
 			}
 		}
-
 	}
 	else
 	{
-		if (_StartSmoothingLED > 0)
-		{
-			setLED(0, 0, 0, _StartSmoothingLED);
-		}
+		setLED(0, 0, 0, _SmoothingLEDNumber);
 	}
 
 	if (_Time.elapsed(_Intervall))
 	{
-
 		if (_Running)
 		{
 			switch (_Mode)
@@ -251,23 +255,14 @@ bool micomponents::miLedStrip::handleLeds()
 			case LedStripMode::full:
 			{
 				setLeds(_NumberOfLedsPlaying);
-				/*if (_LastMode != LedMode::full)
-				{
-					showLed();
-				}*/
 				break;
 			}
 			case LedStripMode::off:
 			{
 				clearLeds(_NumberOfLedsPlaying);
-				/*if (_LastMode != LedMode::off)
-				{
-					showLed();
-				}*/
 				break;
 			}
 			}
-			_LastMode = _Mode;
 		}
 		else
 		{
@@ -276,6 +271,15 @@ bool micomponents::miLedStrip::handleLeds()
 		showLed();
 	}
 	return true;
+}
+
+bool micomponents::miLedStrip::setLedIntern(unsigned char r, unsigned char g, unsigned char b, int number)
+{
+	if (number == _SmoothingLEDNumber)
+	{
+		return false;
+	}
+	return setLED(r, g, b, number);
 }
 
 bool micomponents::miLedStrip::serialOpen()
@@ -355,6 +359,57 @@ void micomponents::miLedStrip::stopLED()
 	_Running = false;
 }
 
+void micomponents::miLedStrip::setMode(LedStripMode mode)
+{
+
+	_Mode = mode;
+}
+
+micomponents::LedStripMode micomponents::miLedStrip::getMode()
+{
+	return _Mode;
+}
+
+micomponents::LedStripMode micomponents::miLedStrip::stepMode()
+{
+	
+	if (_Mode >= micomponents::LedStripMode::filling)
+	{
+		_Mode = micomponents::LedStripMode::full;
+	}
+	_Mode = static_cast<micomponents::LedStripMode>(static_cast<int>(_Mode) + 1);
+	printf("micomponents::miLedStrip::stepMode() %s %d\n", _Name.c_str(), static_cast<int>(_Mode));
+	return _Mode;
+}
+
+void micomponents::miLedStrip::disableOutputs(bool disable) 
+{
+	miComponentBase::disableOutputs(disable);
+	if (_DisableOutputs)
+	{
+		_LastMode = _Mode;
+		setMode(micomponents::LedStripMode::off);
+	}
+	else
+	{
+		_Mode = _LastMode;
+	}
+}
+
+void micomponents::miLedStrip::check(bool check)
+{
+	miComponentBase::check(check);
+	if (_Check)
+	{
+		_LastMode = _Mode;
+		setMode(micomponents::LedStripMode::full);
+	}
+	else
+	{
+		_Mode = _LastMode;
+	}
+}
+
 bool micomponents::miLedStrip::componentProcess(int rootInterval, int tick)
 {
 	if (!miComponentBase::componentProcess(rootInterval, tick))
@@ -362,7 +417,6 @@ bool micomponents::miLedStrip::componentProcess(int rootInterval, int tick)
 		return false;
 	}
 	handleLeds();
-	
-	return false;
+	return true;
 }
 
