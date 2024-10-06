@@ -195,30 +195,35 @@ bool micomponents::miLedStrip::toggleLED(unsigned char r, unsigned char g, unsig
 
 bool micomponents::miLedStrip::handleLeds()
 {
-	if (_StartSmooth)
+	if (_SmoothTime.elapsed(_SmoothingIntervall))
 	{
-		setLED(_SmoothCnt, _SmoothCnt, _SmoothCnt, _SmoothingLEDNumber);
-
-		if (!_SmoothDir)
+		if (_StartSmooth)
 		{
-			_SmoothCnt++;
-			if (_SmoothCnt >= 240)
+
+			setLED(_SmoothCnt, _SmoothCnt, _SmoothCnt, _SmoothingLEDNumber);
+
+			if (!_SmoothDir)
 			{
-				_SmoothDir = true;
+				_SmoothCnt++;
+				if (_SmoothCnt >= 240)
+				{
+					_SmoothDir = true;
+				}
+			}
+			else
+			{
+				_SmoothCnt--;
+				if (_SmoothCnt <= 10)
+				{
+					_SmoothDir = false;
+				}
 			}
 		}
 		else
 		{
-			_SmoothCnt--;
-			if (_SmoothCnt <= 10)
-			{
-				_SmoothDir = false;
-			}
+			setLED(0, 0, 0, _SmoothingLEDNumber);
 		}
-	}
-	else
-	{
-		setLED(0, 0, 0, _SmoothingLEDNumber);
+		showLed();
 	}
 
 	if (_Time.elapsed(_Intervall))
@@ -346,7 +351,6 @@ bool micomponents::miLedStrip::serialWrite(unsigned char* data, int count)
 
 void micomponents::miLedStrip::startLED()
 {
-	printf("micomponents::miLedStrip::startLED() %s", _Name.c_str());
 	if (_Mode == LedStripMode::runningSingleInvert)
 	{
 		setLeds(_NumberOfLedsPlaying);
@@ -372,13 +376,11 @@ micomponents::LedStripMode micomponents::miLedStrip::getMode()
 
 micomponents::LedStripMode micomponents::miLedStrip::stepMode()
 {
-	
 	if (_Mode >= micomponents::LedStripMode::filling)
 	{
 		_Mode = micomponents::LedStripMode::full;
 	}
 	_Mode = static_cast<micomponents::LedStripMode>(static_cast<int>(_Mode) + 1);
-	printf("micomponents::miLedStrip::stepMode() %s %d\n", _Name.c_str(), static_cast<int>(_Mode));
 	return _Mode;
 }
 

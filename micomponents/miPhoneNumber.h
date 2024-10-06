@@ -32,7 +32,7 @@ namespace micomponents
 		{
 			if (_Channel != nullptr)
 			{
-				_Channel->registerChannelEvent(this);
+				_Channel->registerChannelEvent(this,false);
 			}
 		}
 

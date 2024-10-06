@@ -3,7 +3,7 @@
 void micomponents::miPhoneNumber::ValueChanged(mimodule::ModuleValue& value, const std::string& id)
 {
 	if(!_DisableInputs)
-		_PhoneNumber << value;
+		_PhoneNumber = value.getValue<uint32_t>();
 
 	_PhoneNumberChanged = true;
 }

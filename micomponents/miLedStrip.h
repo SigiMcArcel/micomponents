@@ -28,7 +28,7 @@ namespace micomponents
 
 		int _StartRunningLED;
 		bool _StartRunningLEDInvers;
-		bool _StartFiilingLED;
+		bool _StartFillingLED;
 		bool _StartToggleLED;
 		int _SmoothingLEDNumber;
 		bool _StartSmooth;
@@ -41,10 +41,12 @@ namespace micomponents
 		std::string _SerialDevice;
 
 		int _Intervall;
+		int _SmoothingIntervall;
 		unsigned char _SmoothCnt;
 		bool _SmoothDir;
 		bool _Running;
 		miutils::Time _Time;
+		miutils::Time _SmoothTime;
 
 		bool serialOpen();
 		bool serialClose();
@@ -60,7 +62,13 @@ namespace micomponents
 		bool setLedIntern(unsigned char r, unsigned char g, unsigned char b, int number);
 
 	public:
-		miLedStrip(const std::string name, int maxNumberOfLeds, int intervall, int smoothingLed, const std::string& serialDevice)
+		miLedStrip(
+			const std::string name, 
+			int maxNumberOfLeds, 
+			int intervall, 
+			int smoothingLed,
+			int smoothingLedIntervall, 
+			const std::string& serialDevice)
 			: miComponentBase(name, intervall)
 			, _IsOpen(false)
 			, _MaxNumberOfLeds(maxNumberOfLeds)
@@ -69,7 +77,7 @@ namespace micomponents
 			, _ToggleLedState(0)
 			, _StartRunningLED(false)
 			, _StartRunningLEDInvers(false)
-			, _StartFiilingLED(false)
+			, _StartFillingLED(false)
 			, _StartToggleLED(false)
 			, _SmoothingLEDNumber(smoothingLed)
 			, _StartSmooth(false)
@@ -79,9 +87,11 @@ namespace micomponents
 			, _LedState(NULL)
 			, _SerialDevice(serialDevice)
 			, _Intervall(intervall)
+			, _SmoothingIntervall(smoothingLedIntervall)
 			, _SmoothCnt(0)
 			, _SmoothDir(0)
 			, _Time()
+			, _SmoothTime()
 		{
 			if (serialOpen())
 			{

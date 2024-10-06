@@ -20,7 +20,6 @@ bool micomponents::miButtonLamp::componentProcess(int rootInterval, int tick)
 
 void micomponents::miButtonLamp::ButtonDown(const std::string& name)
 {
-	printf("micomponents::miButtonLamp::ButtonDown\n");
 	if (_Behaviour == ButtonType::Switch)
 	{
 		on();
@@ -33,7 +32,6 @@ void micomponents::miButtonLamp::ButtonDown(const std::string& name)
 
 void micomponents::miButtonLamp::ButtonUp(const std::string& name)
 {
-	printf("micomponents::miButtonLamp::ButtonUp\n");
 	if (_Behaviour == ButtonType::Switch)
 	{
 		off();
@@ -46,11 +44,11 @@ void micomponents::miButtonLamp::ButtonUp(const std::string& name)
 
 void micomponents::miButtonLamp::ButtonClick(const std::string& name)
 {
-	printf("micomponents::miButtonLamp::ButtonClick\n");
+	
 }
+
 void micomponents::miButtonLamp::ButtonToggle(bool state, const std::string& name)
 {
-	printf("micomponents::miButtonLamp::ButtonToggle state = %d\n",state);
 	if (_Behaviour == ButtonType::PushButtonToggle)
 	{
 		if (state)
