@@ -40,7 +40,7 @@ namespace micomponents
 		unsigned char* _LedState;
 		std::string _SerialDevice;
 
-		int _Intervall;
+		int _LedStripIntervall;
 		int _SmoothingIntervall;
 		unsigned char _SmoothCnt;
 		bool _SmoothDir;
@@ -69,7 +69,7 @@ namespace micomponents
 			int smoothingLed,
 			int smoothingLedIntervall, 
 			const std::string& serialDevice)
-			: miComponentBase(name, intervall)
+			: miComponentBase(name, -1)
 			, _IsOpen(false)
 			, _MaxNumberOfLeds(maxNumberOfLeds)
 			, _NumberOfLedsPlaying(maxNumberOfLeds)
@@ -86,7 +86,7 @@ namespace micomponents
 			, _Fd(-1)
 			, _LedState(NULL)
 			, _SerialDevice(serialDevice)
-			, _Intervall(intervall)
+			, _LedStripIntervall(intervall)
 			, _SmoothingIntervall(smoothingLedIntervall)
 			, _SmoothCnt(0)
 			, _SmoothDir(0)

@@ -199,7 +199,6 @@ bool micomponents::miLedStrip::handleLeds()
 	{
 		if (_StartSmooth)
 		{
-
 			setLED(_SmoothCnt, _SmoothCnt, _SmoothCnt, _SmoothingLEDNumber);
 
 			if (!_SmoothDir)
@@ -226,7 +225,7 @@ bool micomponents::miLedStrip::handleLeds()
 		showLed();
 	}
 
-	if (_Time.elapsed(_Intervall))
+	if (_Time.elapsed(_LedStripIntervall))
 	{
 		if (_Running)
 		{
@@ -414,10 +413,12 @@ void micomponents::miLedStrip::check(bool check)
 
 bool micomponents::miLedStrip::componentProcess(int rootInterval, int tick)
 {
+	
 	if (!miComponentBase::componentProcess(rootInterval, tick))
 	{
 		return false;
 	}
+
 	handleLeds();
 	return true;
 }
