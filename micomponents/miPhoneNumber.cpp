@@ -8,7 +8,7 @@ void micomponents::miPhoneNumber::ValueChanged(mimodule::ModuleValue& value, con
 	_PhoneNumberChanged = true;
 }
 
-bool micomponents::miPhoneNumber::componentProcess(int rootInterval, int tick)
+bool micomponents::miPhoneNumber::componentProcess(int rootInterval, long tick)
 {
 	if (!miComponentBase::componentProcess(rootInterval, tick))
 	{

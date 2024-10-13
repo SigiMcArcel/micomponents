@@ -5,7 +5,7 @@ const std::string micomponents::miButton::name()
     return _Name;
 }
 
-bool micomponents::miButton::componentProcess(int rootInterval, int tick)
+bool micomponents::miButton::componentProcess(int rootInterval, long tick)
 {
     if (!miComponentBase::componentProcess(rootInterval, tick))
     {

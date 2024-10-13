@@ -25,8 +25,8 @@ void micomponents::miPlayWaveButtonLamp::ButtonToggle(bool state, const std::str
 
 void micomponents::miPlayWaveButtonLamp::disableOutputs(bool disable)
 {
-	miComponentBase::disableOutputs(disable);
-	if (miComponentBase::_DisableOutputs)
+	miButtonLamp::disableOutputs(disable);
+	if (miButtonLamp::_DisableOutputs)
 	{
 		_Audio.stopWave(_WaveName);
 	}
@@ -39,7 +39,7 @@ void micomponents::miPlayWaveButtonLamp::disableOutputs(bool disable)
 	}
 }
 
-bool micomponents::miPlayWaveButtonLamp::componentProcess(int rootInterval, int tick)
+bool micomponents::miPlayWaveButtonLamp::componentProcess(int rootInterval, long tick)
 {
 	if (!miButtonLamp::componentProcess(rootInterval, tick))
 	{

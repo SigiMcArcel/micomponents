@@ -49,7 +49,7 @@ namespace micomponents
 		virtual void ButtonUp(const std::string& name) override;
 		virtual void ButtonToggle(bool state, const std::string& name) override;
 		virtual void disableOutputs(bool disable) override;
-		virtual bool componentProcess(int rootInterval, int tick) override;
+		virtual bool componentProcess(int rootInterval, long tick) override;
 	};
 
 

@@ -38,7 +38,7 @@ namespace micomponents
 
 		// Geerbt über ModuleValueChangedEvent
 		virtual void ValueChanged(mimodule::ModuleValue& value, const std::string& id) override;
-		virtual bool componentProcess(int rootInterval, int tick) override;
+		virtual bool componentProcess(int rootInterval, long tick) override;
 	};
 }
 

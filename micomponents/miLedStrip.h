@@ -45,6 +45,7 @@ namespace micomponents
 		unsigned char _SmoothCnt;
 		bool _SmoothDir;
 		bool _Running;
+		bool _LastRunningState;
 		miutils::Time _Time;
 		miutils::Time _SmoothTime;
 
@@ -90,6 +91,8 @@ namespace micomponents
 			, _SmoothingIntervall(smoothingLedIntervall)
 			, _SmoothCnt(0)
 			, _SmoothDir(0)
+			, _Running(false)
+			, _LastRunningState(false)
 			, _Time()
 			, _SmoothTime()
 		{
@@ -127,7 +130,7 @@ namespace micomponents
 		micomponents::LedStripMode getMode();
 		micomponents::LedStripMode stepMode();
 
-		virtual bool componentProcess(int rootInterval, int tick) override;
+		virtual bool componentProcess(int rootInterval, long tick) override;
 		virtual void disableOutputs(bool disable) override;
 		virtual void check(bool check) override;
 	};

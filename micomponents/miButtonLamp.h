@@ -44,11 +44,14 @@ namespace micomponents
 		};
 
 		virtual const std::string name() override;
-		virtual bool componentProcess(int rootInterval, int tick) override;
+		virtual void disableOutputs(bool disable) override;
+		virtual void check(bool check) override;
+		virtual bool componentProcess(int rootInterval, long tick) override;
 		virtual void ButtonDown(const std::string& name) override;
 		virtual void ButtonUp(const std::string& name) override;
 		virtual void ButtonClick(const std::string& name) override;
 		virtual void ButtonToggle(bool state, const std::string& name) override;
+		virtual const std::string getValue(const std::string& name) override;
 	};
 }
 

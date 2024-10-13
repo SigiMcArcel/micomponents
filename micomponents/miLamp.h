@@ -19,11 +19,10 @@ namespace micomponents
 		{
 			
 		};
-
-		virtual void lampOn() override;
-		virtual void lampOff() override;
+		virtual void disableOutputs(bool disable) override;
+		virtual void check(bool check) override;
 		virtual const std::string name() override;
-		virtual bool componentProcess(int rootInterval, int tick) override;
+		virtual bool componentProcess(int rootInterval, long tick) override;
 	};
 }
 

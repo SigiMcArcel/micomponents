@@ -21,7 +21,7 @@ namespace micomponents
         }
 
         virtual const std::string name() override;
-        virtual bool componentProcess(int rootInterval, int tick) override;
+        virtual bool componentProcess(int rootInterval, long tick) override;
 	};
 }
 

@@ -5,7 +5,7 @@ const std::string micomponents::miButtonLamp::name()
 	return _Name;
 }
 
-bool micomponents::miButtonLamp::componentProcess(int rootInterval, int tick)
+bool micomponents::miButtonLamp::componentProcess(int rootInterval, long tick)
 {
 	if (!miComponentBase::componentProcess(rootInterval, tick))
 	{
@@ -64,6 +64,57 @@ void micomponents::miButtonLamp::ButtonToggle(bool state, const std::string& nam
 		{
 			_ButtonEvent->ButtonToggle(state,_Name);
 		}
+	}
+}
+
+const std::string micomponents::miButtonLamp::getValue(const std::string& name)
+{
+	if (name == "ButtonState")
+	{
+		return std::to_string(_ButtonState);
+	}
+	return std::string();
+}
+
+void micomponents::miButtonLamp::disableOutputs(bool disable)
+{
+	bool val = false;
+	miComponentBase::disableOutputs(disable);
+
+	if (_DisableOutputs)
+	{
+		_LampDisable = true;
+		if (miLampBase::_Channel == nullptr)
+		{
+			return;
+		}
+		miLampBase::_Channel->value().setValue(val);
+	}
+	else
+	{
+		_LampDisable = false;
+		handleLamp();
+	}
+}
+
+void micomponents::miButtonLamp::check(bool check)
+{
+	bool val = true;
+	miComponentBase::check(check);
+	
+	if (_Check)
+	{
+		_LampControl = true;
+		if (miLampBase::_Channel == nullptr)
+		{
+			return;
+		}
+		miLampBase::_Channel->value().setValue(val);
+	}
+	else
+	{
+		_LampControl = false;
+		handleLamp();
 	}
 }
 
