@@ -1,6 +1,5 @@
 #pragma once
 #include <queue>
-#include <mi/mitasks/miTaskBase.h>
 #include <memory>  // für std::shared_ptr
 #include "miLampBase.h"
 #include "miLamp.h"

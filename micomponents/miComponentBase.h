@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include <mi/miutils/Time.h>
-#include <mi/mitasks/miTaskSync.h>
+
 
 namespace micomponents
 {
@@ -17,7 +17,6 @@ namespace micomponents
 		int _Intervall;
 		std::string _Name;
 		miutils::Time _Time;
-		mitasks::miTaskSync* _ParentTaskSync;
 		int _LastTick;
 
 	public:
@@ -29,15 +28,9 @@ namespace micomponents
 			, _Intervall(intervall)
 			, _Name(name)
 			, _Time()
-			, _ParentTaskSync(nullptr)
 			, _LastTick(0)
 		{
 
-		}
-
-		void setParentTaskSync(mitasks::miTaskSync* parentTaskSync)
-		{
-			_ParentTaskSync = parentTaskSync;
 		}
 
 		virtual const std::string name();
@@ -48,21 +41,6 @@ namespace micomponents
 		virtual void disableOutputs(bool disable);
 		virtual void check(bool check);
 		virtual const std::string getValue(const std::string& name);
-
-		void lock()
-		{
-			if (_ParentTaskSync != nullptr)
-			{
-				_ParentTaskSync->lock();
-			}
-		}
-		void unlock()
-		{
-			if (_ParentTaskSync != nullptr)
-			{
-				_ParentTaskSync->unlock();
-			}
-		}
 	};
 
 	typedef std::shared_ptr<miComponentBase> miComponentBaseShared;
