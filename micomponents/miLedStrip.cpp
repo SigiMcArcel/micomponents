@@ -305,11 +305,12 @@ bool micomponents::miLedStrip::serialOpen()
 	_Fd = open(_SerialDevice.c_str(), O_RDWR | O_NONBLOCK);
 	if (_Fd == -1)
 	{
+		fprintf(stderr,"Fehler beim Abrufen der Attribute");
 		return false;
 	}
 	// Aktuelle Einstellungen der seriellen Schnittstelle abrufen
 	if (tcgetattr(_Fd, &tty) != 0) {
-		printf("Fehler beim Abrufen der Attribute");
+		fprintf(stderr,"Fehler beim Abrufen der Attribute");
 		return false;
 	}
 	cfsetospeed(&tty, B115200);            // 115200 baud

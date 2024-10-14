@@ -65,8 +65,8 @@ namespace micomponents
 	public:
 		miLedStrip(
 			const std::string name, 
-			int maxNumberOfLeds, 
-			int intervall, 
+			int maxNumberOfLeds,
+			int ledStripIntervall, 
 			int smoothingLed,
 			int smoothingLedIntervall, 
 			const std::string& serialDevice)
@@ -87,7 +87,7 @@ namespace micomponents
 			, _Fd(-1)
 			, _LedState(NULL)
 			, _SerialDevice(serialDevice)
-			, _LedStripIntervall(intervall)
+			, _LedStripIntervall(ledStripIntervall)
 			, _SmoothingIntervall(smoothingLedIntervall)
 			, _SmoothCnt(0)
 			, _SmoothDir(0)
