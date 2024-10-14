@@ -4,39 +4,34 @@ includedir=$(prefix)/include
 libdir=$(prefix)/lib
 
 INCLUDES = -I. -I/.
-CXX_FLAGS = -fpic -Wall -Wl,--no-undefined
+CXXFLAGS = -fpic -Wall -Wl,--no-undefined
 LD_FLAGS = -shared -lpthread -lmiutils -lmimodules -lmisound
 
-SOURCES=miLamp.cpp miButton.cpp miButtonLamp.cpp miPlayWaveButtonLamp.cpp miVolume.cpp
-OBJECTS=$(SOURCES:.cpp=.o)
+# Automatisch alle .cpp-Dateien im aktuellen Verzeichnis als SOURCES verwenden
+SOURCES := $(wildcard *.cpp)
+OBJECTS := $(SOURCES:.cpp=.o)
 
-LIBRARYOUT=libmicomponents.so
+# Bibliotheksname basierend auf dem Verzeichnisnamen erstellen
+PROJECT_NAME := $(notdir $(CURDIR))
+LIBRARYOUT = lib$(PROJECT_NAME).so
 
-
+# Regel zum Kompilieren der .cpp-Dateien zu .o-Dateien
 .cpp.o:
-	$(CXX) $(CXX_FLAGS) $(INCLUDES) -c $<
-$(LIBRARYOUT):$(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
+
+# Regel zum Erstellen der Bibliothek
+$(LIBRARYOUT): $(OBJECTS)
 	$(CXX) $(LD_FLAGS) $(OBJECTS) -o $(LIBRARYOUT)
+
+# Regel zum Bereinigen der Build-Artefakte
 clean:
 	$(RM) $(LIBRARYOUT) *.o
-	
 
+# Regel zur Installation der Bibliothek und Header-Dateien
 install: $(LIBRARYOUT)
-	install -d $(DESTDIR)/${libdir}
-	install -D -m 0644 $(LIBRARYOUT) $(DESTDIR)/${libdir}/$(LIBRARYOUT)
-	install -d $(DESTDIR)/${includedir}
-	install -d $(DESTDIR)/${includedir}/mi
-	install -d $(DESTDIR)/${includedir}/mi/micomponents
-	install -D -m 0644 miAudio.h $(DESTDIR)/${includedir}/mi/micomponents/miAudio.h
-	install -D -m 0644 miLedStrip.h $(DESTDIR)/${includedir}/mi/micomponents/miLedStrip.h
-	install -D -m 0644 miPhoneNumber.h $(DESTDIR)/${includedir}/mi/micomponents/miPhoneNumber.h
-	install -D -m 0644 miSevenSegment.h $(DESTDIR)/${includedir}/mi/micomponents/miSevenSegment.h
-	install -D -m 0644 miLampBase.h $(DESTDIR)/${includedir}/mi/micomponents/miLampBase.h
-	install -D -m 0644 miButtonBase.h $(DESTDIR)/${includedir}/mi/micomponents/miButtonBase.h
-	install -D -m 0644 miLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miLamp.h
-	install -D -m 0644 miButton.h $(DESTDIR)/${includedir}/mi/micomponents/miButton.h
-	install -D -m 0644 miButtonLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miButtonLamp.h
-	install -D -m 0644 miPlayWaveButtonLamp.h $(DESTDIR)/${includedir}/mi/micomponents/miPlayWaveButtonLamp.h
-	install -D -m 0644 miVolume.h $(DESTDIR)/${includedir}/mi/micomponents/miVolume.h
-	install -D -m 0644 miComponentManager.h $(DESTDIR)/${includedir}/mi/micomponents/miComponentManager.h
-	install -D -m 0644 miComponentBase.h $(DESTDIR)/${includedir}/mi/micomponents/miComponentBase.h
+	install -d $(DESTDIR)/$(libdir)
+	install -D -m 0644 $(LIBRARYOUT) $(DESTDIR)/$(libdir)/$(LIBRARYOUT)
+	install -d $(DESTDIR)/$(includedir)/mi/$(PROJECT_NAME)
+	for header in *.h; do \
+		install -D -m 0644 $$header $(DESTDIR)/$(includedir)/mi/$(PROJECT_NAME)/$$header; \
+	done
